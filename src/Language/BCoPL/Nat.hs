@@ -1,20 +1,14 @@
 {-# LANGUAGE NPlusKPatterns #-}
-{-# LANGUAGE TypeSynonymInstances #-}
-{-# LANGUAGE FlexibleInstances #-}
 module Language.BCoPL.Nat (
     -- * Types
       Nat(..)
     , Judge(..)
-    , Derivation
     -- * Derivation
     , deduce
     , derivation
     ) where
 
-import Data.Tree (Tree(..))
-import Text.PrettyPrint.Boxes
-
-import Language.BCoPL.Diagram
+import Language.BCoPL.Derivation (Tree(..),Derivation,Deducer,derivation)
 
 data Nat = Z 
          | S Nat
@@ -40,12 +34,7 @@ instance Show Judge where
   show (Plus k m n)  = show k ++ " plus " ++ show m ++ " is " ++ show n
   show (Times k m n) = show k ++ " times " ++ show m ++ " is " ++ show n
 
-type Derivation = Tree (String,Judge)
-
-instance Show Derivation where
-  show = renderDiagram . ppr
-
-deduce :: Judge -> [Derivation]
+deduce :: Judge -> [Derivation Judge]
 deduce j = case j of
   Plus Z n1 n2 | n1 == n2 -> [Node ("P-Zero",j) []]
   Plus (S n1) n2 (S n3)   -> deduce (Plus n1 n2 n3) >>= \ j' ->
@@ -56,16 +45,3 @@ deduce j = case j of
                              deduce (Times n1 n2 n3) >>= \ j1 ->
                              [Node ("T-Succ",j) [j1,j2]]
   _                       -> []
-
-derivation :: Judge -> String
-derivation = renderDiagram . deduction
-
-deduction :: Judge -> Diagram
-deduction j = case deduce j of
-  t:_ -> ppr t
-  []  -> err
-    where
-      err = Diagram { leading = 0, judgement = length msg, trailing = 0
-                    , diagram = text msg
-                    }
-      msg = show j ++ ": Cannot deduced"

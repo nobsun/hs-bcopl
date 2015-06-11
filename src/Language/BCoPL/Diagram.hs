@@ -3,7 +3,7 @@ module Language.BCoPL.Diagram (
     Diagram (..)
   -- * Pretty Printer
   , ppr
-  , pprs
+  , textDiag
   -- * Renderer for a diagram
   , renderDiagram
   ) where
@@ -48,3 +48,8 @@ pprs ts = Diagram dlead djudge dtrail ddia
 renderDiagram :: Diagram -> String
 renderDiagram = render . diagram
 
+-- | Text diagram
+textDiag :: String -> Diagram
+textDiag txt = Diagram { leading = 0, judgement = length txt, trailing = 0
+                       , diagram = text txt
+                       }
