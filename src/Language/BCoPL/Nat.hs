@@ -14,6 +14,8 @@ module Language.BCoPL.Nat (
 import Data.Tree (Tree(..))
 import Text.PrettyPrint.Boxes
 
+import Language.BCoPL.Diagram
+
 data Nat = Z 
          | S Nat
          deriving (Eq,Ord)
@@ -23,7 +25,7 @@ instance Show Nat where
   show (S n) = "S("++show n++")"
 
 instance Enum Nat where
-  succ n = S n
+  succ = S
   pred (S n) = n
   toEnum 0     = Z
   toEnum (n+1) = S (toEnum n)
@@ -41,7 +43,7 @@ instance Show Judge where
 type Derivation = Tree (String,Judge)
 
 instance Show Derivation where
-  show = render . diagram . ppr
+  show = renderDiagram . ppr
 
 deduce :: Judge -> [Derivation]
 deduce j = case j of
@@ -55,10 +57,8 @@ deduce j = case j of
                              [Node ("T-Succ",j) [j1,j2]]
   _                       -> []
 
-data Diagram = Diagram {leading,judgement,trailing :: Int, diagram :: Box}
-
 derivation :: Judge -> String
-derivation = render . diagram . deduction
+derivation = renderDiagram . deduction
 
 deduction :: Judge -> Diagram
 deduction j = case deduce j of
@@ -66,35 +66,6 @@ deduction j = case deduce j of
   []  -> err
     where
       err = Diagram { leading = 0, judgement = length msg, trailing = 0
-                    , diagram = text $ msg
+                    , diagram = text msg
                     }
       msg = show j ++ ": Cannot deduced"
-
-ppr :: Derivation -> Diagram
-ppr (Node (rn,j) ts) = case pprs ts of
-  Diagram tlead tjudge ttrail tdia
-    -> Diagram dlead djudge dtrail ddia
-       where
-         (blead,bjudge,btrail,bdia) = (0,cols bdia,0,text (show j))
-         bdia'  = moveRight blead' bdia
-         (tlead',blead') = if tent > bent then (tlead,blead+(tent-bent)`div`2)
-                           else (tlead+(bent-tent)`div`2,blead)
-         (tent,bent) = (2*tlead+tjudge,2*blead+bjudge)
-         tdia'  = moveRight (tlead' - tlead) tdia
-         mlead' = tlead' `min` blead'
-         mdia   = text $ replicate (tjudge `max` bjudge) '-' ++ "(" ++ rn ++ ")"
-         mdia'  = moveRight (tlead' `min` blead') mdia
-         ddia   = tdia' // mdia' // bdia'
-         dlead  = blead'
-         djudge = cols bdia
-         dtrail = cols ddia - dlead - djudge
-
-pprs :: [Derivation] -> Diagram
-pprs [] = Diagram 0 0 0 (text "")
-pprs ts = Diagram dlead djudge dtrail ddia
-  where
-    bs  = map ppr ts
-    dlead  = leading $ head bs
-    djudge = cols ddia - dlead - dtrail
-    dtrail = trailing $ last bs
-    ddia   = hsep 3 bottom $ map diagram bs
