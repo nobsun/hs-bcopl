@@ -3,8 +3,9 @@ module Language.BCoPL.Nat (
     -- * Types
       Nat(..)
     , Judge(..)
-    -- * Derivation
+    -- * Deduction
     , deduce
+    -- * Derivation
     , derivation
     ) where
 

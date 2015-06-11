@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                hs-bcopl
-version:             0.1.2.3
+version:             0.1.3.0
 -- synopsis:            
 -- description:         
 homepage:            http://github.com/nobsun/hs-bcopl
@@ -20,6 +20,7 @@ library
   exposed-modules:     Language.BCoPL.Nat
                      , Language.BCoPL.Diagram
                      , Language.BCoPL.Derivation
+                     , Language.BCoPL.CompareNat
   -- other-modules:       
   -- other-extensions:    
   build-depends:       base >=4.8 && <4.9
