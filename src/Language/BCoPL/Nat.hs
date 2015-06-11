@@ -47,12 +47,12 @@ deduce :: Judge -> [Derivation]
 deduce j = case j of
   Plus Z n1 n2 | n1 == n2 -> [Node ("P-Zero",j) []]
   Plus (S n1) n2 (S n3)   -> deduce (Plus n1 n2 n3) >>= \ j' ->
-                             return (Node ("P-Succ",j) [j'])
+                             [Node ("P-Succ",j) [j']]
   Times Z _ n  | n == Z   -> return (Node ("T-Zero",j) [])
   Times (S n1) n2 n4      -> [Z .. n4] >>= \ n3 ->
                              deduce (Plus n2 n3 n4)  >>= \ j2 ->
                              deduce (Times n1 n2 n3) >>= \ j1 ->
-                             return (Node ("T-Succ",j) [j1,j2])                             
+                             [Node ("T-Succ",j) [j1,j2]]
   _                       -> []
 
 data Diagram = Diagram {leading,judgement,trailing :: Int, diagram :: Box}
@@ -90,7 +90,7 @@ ppr (Node (rn,j) ts) = case pprs ts of
          dtrail = cols ddia - dlead - djudge
 
 pprs :: [Derivation] -> Diagram
-pprs [] = Diagram 0 0 0 (emptyBox 1 0)
+pprs [] = Diagram 0 0 0 (text "")
 pprs ts = Diagram dlead djudge dtrail ddia
   where
     bs  = map ppr ts
