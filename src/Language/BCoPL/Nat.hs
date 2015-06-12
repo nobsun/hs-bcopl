@@ -35,7 +35,7 @@ instance Show Judge where
   show (Plus k m n)  = show k ++ " plus " ++ show m ++ " is " ++ show n
   show (Times k m n) = show k ++ " times " ++ show m ++ " is " ++ show n
 
-deduce :: Judge -> [Derivation Judge]
+deduce :: Deducer Judge
 deduce j = case j of
   Plus Z n1 n2 | n1 == n2 -> [Node ("P-Zero",j) []]
   Plus (S n1) n2 (S n3)   -> deduce (Plus n1 n2 n3) >>= \ j' ->
