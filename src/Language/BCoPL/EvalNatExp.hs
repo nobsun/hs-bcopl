@@ -1,6 +1,10 @@
 module Language.BCoPL.EvalNatExp (
     -- * Types
-    Exp
+    Nat(..)
+  , Exp(..)
+  , Judge
+    -- * Deducer
+  , deduce
   ) where
 
 import Language.BCoPL.Nat (Nat(..))
@@ -10,6 +14,7 @@ import Language.BCoPL.Derivation (Tree(..),Derivation,Deducer,derivation)
 data Exp = Nat Nat
          | Exp :+: Exp
          | Exp :*: Exp
+         deriving (Eq)
 
 instance Show Exp where
   show e = case e of
