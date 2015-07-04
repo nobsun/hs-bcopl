@@ -27,7 +27,6 @@ deduce1 j = case j of
                     deduce1 (LessThan n1 n2) >>= \ j1 ->
                     deduce1 (LessThan n2 n3) >>= \ j2 ->
                     [Node ("L-Trans",j) [j1,j2]]
-  _              -> []
 
 deduce2 :: Deducer Judge
 deduce2 j = case j of
