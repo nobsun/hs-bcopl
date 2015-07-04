@@ -1,4 +1,4 @@
-module Language.BCoPL.ReduceNatExpr (
+module Language.BCoPL.ReduceNatExp (
     -- * Types
     Judge(OnNat,ReduceTo)
     -- * deducers
