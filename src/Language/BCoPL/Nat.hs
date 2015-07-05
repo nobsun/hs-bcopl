@@ -13,7 +13,7 @@ import Language.BCoPL.Derivation (Tree(..),Derivation,Deducer,derivation)
 
 data Nat = Z 
          | S Nat
-         deriving (Eq,Ord)
+         deriving (Eq,Ord,Read)
 
 instance Show Nat where
   show Z     = "Z"
@@ -46,3 +46,4 @@ deduce j = case j of
                              deduce (Times n1 n2 n3) >>= \ j1 ->
                              [Node ("T-Succ",j) [j1,j2]]
   _                       -> []
+

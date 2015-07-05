@@ -4,7 +4,7 @@ module Language.BCoPL.EvalNatExp (
   , Exp(..)
   , Judge
     -- * Deducer
-  , deduce
+  , deduceE
   ) where
 
 import Language.BCoPL.Nat (Nat(..))
@@ -36,21 +36,22 @@ instance Show Judge where
 toJudge :: Derivation Nat.Judge -> Derivation Judge
 toJudge (Node (s,nj) ts) = Node (s,OnNat nj) (map toJudge ts)
 
-deduce :: Deducer Judge
-deduce j = case j of
+deduceE :: Deducer Judge
+deduceE j = case j of
   OnNat nj    -> map toJudge (Nat.deduce nj)
   EvalTo e n  -> case e of
     Nat n' | n' == n -> [Node ("E-Const",j) []]
     e1 :+: e2        -> [Z .. n]                           >>= \ n1 ->
-                        deduce (EvalTo e1 n1)              >>= \ j1 ->
+                        deduceE (EvalTo e1 n1)              >>= \ j1 ->
                         [Z .. n]                           >>= \ n2 ->
-                        deduce (EvalTo e2 n2)              >>= \ j2 ->
-                        deduce (OnNat (Nat.Plus n1 n2 n))  >>= \ j3 ->
+                        deduceE (EvalTo e2 n2)              >>= \ j2 ->
+                        deduceE (OnNat (Nat.Plus n1 n2 n))  >>= \ j3 ->
                         [Node ("E-Plus",j) [j1,j2,j3]]
     e1 :*: e2        -> [Z .. n]                           >>= \ n1 ->
-                        deduce (EvalTo e1 n1)              >>= \ j1 ->
+                        deduceE (EvalTo e1 n1)              >>= \ j1 ->
                         [Z .. n]                           >>= \ n2 ->
-                        deduce (EvalTo e2 n2)              >>= \ j2 ->
-                        deduce (OnNat (Nat.Times n1 n2 n)) >>= \ j3 ->
+                        deduceE (EvalTo e2 n2)              >>= \ j2 ->
+                        deduceE (OnNat (Nat.Times n1 n2 n)) >>= \ j3 ->
                         [Node ("E-Times",j) [j1,j2,j3]]
     _                -> []
+
