@@ -30,8 +30,6 @@ instance Show Judge where
   show (ReduceToOne e1 e2) = show e1 ++ " --> " ++ show e2
   show (ReduceToDet e1 e2) = show e1 ++ " ->d " ++ show e2
 
-
-
 toJudge :: Derivation Nat.Judge -> Derivation Judge
 toJudge (Node (s,nj) ts) = Node (s,OnNat nj) (map toJudge ts)
 
@@ -77,7 +75,7 @@ deduceMulti deduce1 j = case j of
                            [Node ("MR-Multi",j) [j1,j2]]
     _                   -> []
 
-{- 
+deduceDetL :: Deducer Judge
 deduceDetL j = case j of
   OnNat nj           -> map toJudge (Nat.deduce nj)
   ReduceTo exp1 exp2 -> case exp1 of
@@ -154,6 +152,7 @@ isDeltaRedex e = case e of
   (e1 :*: e2) -> isNormalForm e1 && isNormalForm e2
   _           -> False
 
+{-
 deduceMulti :: Deducer Judge -> Deducer Judge
 deduceMulti deduce j = case j of
   ReduceTo exp1 exp2
@@ -161,3 +160,10 @@ deduceMulti deduce j = case j of
     | otherwise        -> [Node ("MR-One",j) [j'] | j' <- deduce (ReduceTo exp1 exp2)]
   _                    -> []
 -}
+
+displayDL = putStrLn . derivation deduceDetL 
+displayDR = putStrLn . derivation deduceDetR
+displayML = putStrLn . derivation (deduceMulti deduceDetL)
+displayMR = putStrLn . derivation (deduceMulti deduceDetR)
+displayM  = putStrLn . derivation (deduceMulti deduceOne)
+display   = putStrLn . derivation deduceOne
