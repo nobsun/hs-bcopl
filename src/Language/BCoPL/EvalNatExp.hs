@@ -14,7 +14,7 @@ import Data.Char (toLower)
 import Language.BCoPL.Exp (Exp(..))
 import Language.BCoPL.Peano (Nat(..))
 import qualified Language.BCoPL.Nat as Nat (Judge(..),deduce)
-import Language.BCoPL.Derivation (Tree(..),Deducer,Derivation,sessionGen)
+import Language.BCoPL.Derivation (Tree(..),Deducer,Derivation,sessionGen,sessionGen')
 
 data Judge = OnNat Nat.Judge
            | EvalTo Exp Nat
@@ -44,13 +44,14 @@ deduce j = case j of
                         , j3 <- deduce (OnNat (Nat.Plus n1 n2 n))
                         ]
     e1 :*: e2        -> [ Node ("E-Times",j) [j1,j2,j3]
-                        | n1 <- [Z .. n]
+                        | n1 <- [Z .. ]
                         , j1 <- deduce (EvalTo e1 n1)
-                        , n2 <- [Z .. n]
+                        , n2 <- [Z .. ]
                         , j2 <- deduce (EvalTo e2 n2)
                         , j3 <- deduce (OnNat (Nat.Times n1 n2 n))
                         ]
     _                -> []
 
-session :: IO ()
-session = sessionGen ("EvalNat> ",deduce)
+session,session' :: IO ()
+session  = sessionGen  ("EvalNat> ",deduce)
+session' = sessionGen' ("EvalNat> ",deduce)

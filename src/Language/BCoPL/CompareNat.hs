@@ -10,10 +10,13 @@ module Language.BCoPL.CompareNat (
   , session1
   , session2
   , session3
+  , session1'
+  , session2'
+  , session3'
   ) where
 
 import Language.BCoPL.Peano (Nat(..))
-import Language.BCoPL.Derivation (Tree(..),Deducer,sessionGen)
+import Language.BCoPL.Derivation (Tree(..),Deducer,sessionGen,sessionGen')
 
 data Judge = LessThan Nat Nat
            deriving (Eq)
@@ -58,3 +61,7 @@ session1 = sessionGen ("CompareNat1> ",deduce1)
 session2 = sessionGen ("CompareNat2> ",deduce2)
 session3 = sessionGen ("CompareNat3> ",deduce3)
 
+session1',session2',session3' :: IO ()
+session1' = sessionGen' ("CompareNat1> ",deduce1)
+session2' = sessionGen' ("CompareNat2> ",deduce2)
+session3' = sessionGen' ("CompareNat3> ",deduce3)

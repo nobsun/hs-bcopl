@@ -14,8 +14,8 @@ data Exp = Nat Nat
 instance Show Exp where
   show e = case e of
     Nat n     -> show n
-    e1 :+: e2 -> show e1 ++ "+" ++ show e2
-    e1 :*: e2 -> show' e1 ++ "*" ++ show' e2
+    e1 :+: e2 -> show e1 ++ " + " ++ show e2
+    e1 :*: e2 -> show' e1 ++ " * " ++ show' e2
     where
       show' e' = case e' of
         e1' :+: e2' -> "("++show e'++")"

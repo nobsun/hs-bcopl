@@ -6,11 +6,12 @@ module Language.BCoPL.Derivation (
   , Derivation
     -- * Session generator for deriving judgement
   , sessionGen
+  , sessionGen'
   ) where
 
 import Control.Exception (catch, SomeException)
 import Data.Char (toLower)
-import Data.List (isPrefixOf)
+import Data.List (isPrefixOf,intersperse)
 import Data.Tree (Tree (..))
 import Language.BCoPL.Diagram (Diagram(..),renderDiagram,ppr,textDiag)
 
@@ -40,6 +41,18 @@ deduction deducer j = case deducer j of
   t:_ -> ppr t
   []  -> textDiag $ show j ++ ": Cannot be deduced"
 
-instance Show Diagram where
-  show = renderDiagram
+sessionGen' :: (Read a, Show a) => (String, Deducer a) -> IO ()
+sessionGen' (p,d) = prompt p ":q" (derivation' d)
 
+deduction' :: (Show a) => Deducer a -> (a -> String)
+deduction' deducer j = case deducer j of
+  []  -> show j ++ ": Cannot be deduced"
+  t:_ -> toString t
+
+derivation' :: (Show a) => Deducer a -> (a -> String)
+derivation' = deduction'
+
+toString :: Show a => Derivation a -> String
+toString (Node (s,a) ds)
+  = unwords [show a,"by",s,"{"
+            ,unwords (intersperse ";" (map toString ds)),"}"]

@@ -6,10 +6,11 @@ module Language.BCoPL.Nat (
     , deduce
       -- * Session for deriving judge on 'Nat'
     , session
+    , session'
     ) where
 
 import Language.BCoPL.Peano (Nat(..))
-import Language.BCoPL.Derivation (Tree(..),Deducer,sessionGen)
+import Language.BCoPL.Derivation (Tree(..),Deducer,sessionGen,sessionGen')
 
 data Judge = Plus  { k,m,n :: Nat }
            | Times { k,m,n :: Nat }
@@ -39,6 +40,7 @@ deduce j = case j of
                              ]
   _                       -> []
 
-session :: IO ()
+session,session' :: IO ()
 session = sessionGen ("Nat> ",deduce)
+session' = sessionGen' ("Nat> ",deduce)
 
