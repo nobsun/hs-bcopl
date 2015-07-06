@@ -89,7 +89,7 @@ deduceMulti deduce1 j = case j of
   ReduceTo exp1 exp2
     | exp1 == exp2    -> [Node ("MR-Zero",j) []]
     | otherwise       -> (deduce1 (ReduceTo exp1 exp2)      >>= \ j1 ->
-                          [Node ("MR-One",toOne j) [j1]])
+                          [Node ("MR-One",j) [j1]])
                          ++
                          case exp2 of
     Nat n3              -> case exp1 of
