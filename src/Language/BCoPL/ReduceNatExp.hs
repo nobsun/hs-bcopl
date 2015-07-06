@@ -1,18 +1,27 @@
 module Language.BCoPL.ReduceNatExp (
     -- * Types
     Judge(OnNat,ReduceTo)
-    -- * deducers
+    -- * Deducers
   , deduceOne
+  , deduceDetL
+  , deduceDetR
+  , deduceMulti
+    -- * Sessions
+  , sessionDetL
+  , sessionDetR
+  , sessionMultiL
+  , sessionMultiR
+  , sessionMulti
+  , sessionOne
   ) where
 
 import Control.Applicative ((<|>))
+import Data.List.Split
 
 import Language.BCoPL.Nat (Nat(..))
 import qualified Language.BCoPL.Nat as Nat (Judge(..),deduce)
 import Language.BCoPL.EvalNatExp (Exp(..))
-import Language.BCoPL.Derivation (Tree(..),Derivation,Deducer,derivation)
-
-import Debug.Trace (trace)
+import Language.BCoPL.Derivation (Tree(..),Derivation,Deducer,sessionGen)
 
 data Judge = OnNat Nat.Judge
            | ReduceTo Exp Exp
@@ -26,9 +35,14 @@ toDet (ReduceTo e1 e2) = ReduceToDet e1 e2
 
 instance Show Judge where
   show (OnNat jn)          = show jn
-  show (ReduceTo e1 e2)    = show e1 ++ " ->* " ++ show e2
-  show (ReduceToOne e1 e2) = show e1 ++ " --> " ++ show e2
-  show (ReduceToDet e1 e2) = show e1 ++ " ->d " ++ show e2
+  show (ReduceTo e1 e2)    = unwords [show e1,"-*->",show e2]
+  show (ReduceToOne e1 e2) = unwords [show e1,"--->",show e2]
+  show (ReduceToDet e1 e2) = unwords [show e1,"-d->",show e2]
+
+instance Read Judge where
+  readsPrec _ s = case splitOneOf ["-*->","--->","-d->"] (words s) of
+    ss:ds:_ -> [(ReduceTo (read (concat ss)) (read (concat ds)),"")]
+    _       -> error ("Invalid syntax for 'ReduceNatExp' judge: "++s)
 
 toJudge :: Derivation Nat.Judge -> Derivation Judge
 toJudge (Node (s,nj) ts) = Node (s,OnNat nj) (map toJudge ts)
@@ -152,18 +166,10 @@ isDeltaRedex e = case e of
   (e1 :*: e2) -> isNormalForm e1 && isNormalForm e2
   _           -> False
 
-{-
-deduceMulti :: Deducer Judge -> Deducer Judge
-deduceMulti deduce j = case j of
-  ReduceTo exp1 exp2
-    | exp1 == exp2     -> [Node ("MR-Zero",j) []]
-    | otherwise        -> [Node ("MR-One",j) [j'] | j' <- deduce (ReduceTo exp1 exp2)]
-  _                    -> []
--}
-
-displayDL = putStrLn . derivation deduceDetL 
-displayDR = putStrLn . derivation deduceDetR
-displayML = putStrLn . derivation (deduceMulti deduceDetL)
-displayMR = putStrLn . derivation (deduceMulti deduceDetR)
-displayM  = putStrLn . derivation (deduceMulti deduceOne)
-display   = putStrLn . derivation deduceOne
+sessionDetL,sessionDetR,sessionMultiL,sessionMultiR,sessionMulti,sessionOne :: IO ()
+sessionDetL   = sessionGen ("ReduceDetL> ",deduceDetL)
+sessionDetR   = sessionGen ("ReduceDetR> ",deduceDetR)
+sessionMultiL = sessionGen ("ReduceMultiL> ",deduceMulti deduceDetL)
+sessionMultiR = sessionGen ("ReduceMultiR> ",deduceMulti deduceDetR)
+sessionMulti  = sessionGen ("ReduceMulti> ",deduceMulti deduceOne)
+sessionOne    = sessionGen ("ReduceOne> ",deduceOne)

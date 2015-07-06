@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                hs-bcopl
-version:             0.1.4.3
+version:             0.1.4.3.1
 -- synopsis:            
 -- description:         
 homepage:            http://github.com/nobsun/hs-bcopl
@@ -17,16 +17,20 @@ extra-source-files:  README.md
 cabal-version:       >=1.10
 
 library
-  exposed-modules:     Language.BCoPL.Nat
-                     , Language.BCoPL.Diagram
-                     , Language.BCoPL.Derivation
+  exposed-modules:     Language.BCoPL.Peano
+                     , Language.BCoPL.Nat
+                     , Language.BCoPL.Exp
                      , Language.BCoPL.CompareNat
                      , Language.BCoPL.EvalNatExp
                      , Language.BCoPL.ReduceNatExp
+                     , Language.BCoPL.Diagram
+                     , Language.BCoPL.Derivation
   -- other-modules:       
   -- other-extensions:    
   build-depends:       base >=4.8 && <4.9
-                     , containers
                      , boxes
+                     , containers
+                     , parsec
+                     , split
   hs-source-dirs:      src
   default-language:    Haskell2010
