@@ -1,6 +1,9 @@
 module Language.BCoPL.Exp (
     -- * Types
     Exp(..)
+  , operator
+  , loperand
+  , roperand
   ) where
 
 import Text.ParserCombinators.ReadP
@@ -10,6 +13,18 @@ data Exp = Nat Nat
          | Exp :+: Exp
          | Exp :*: Exp
          deriving (Eq)
+
+operator :: Exp -> (Exp -> Exp -> Exp)
+operator (_ :+: _) = (:+:)
+operator (_ :*: _) = (:*:)
+
+loperand :: Exp -> Exp
+loperand (l :+: _) = l
+loperand (l :*: _) = l
+
+roperand :: Exp -> Exp
+roperand (_ :+: r) = r
+roperand (_ :*: r) = r
 
 instance Show Exp where
   show e = case e of
@@ -29,8 +44,16 @@ expr    = term   `chainl1` addop
 term    = factor `chainl1` mulop
 factor  = parens expr +++ nat
 
-mulop   = string "*" >> return (:*:)
-addop   = string "+" >> return (:+:)
+mulop   = do { skipSpaces
+             ; string "*"
+             ; skipSpaces
+             ; return (:*:)
+             }
+addop   = do { skipSpaces
+             ; string "+"
+             ; skipSpaces
+             ; return (:+:)
+             }
 
 nat :: ReadP Exp
 nat = peano >>= return . Nat
