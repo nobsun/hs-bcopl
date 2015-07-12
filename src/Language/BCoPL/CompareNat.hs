@@ -1,44 +1,29 @@
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE NPlusKPatterns #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
 module Language.BCoPL.CompareNat (
-    -- * Types
-    Nat (..)
-  , Judge (..)
-    -- * Deduction
-  , deduce1
-  , deduce2
-  , deduce3
-  , derivation
   ) where
 
-import Debug.Trace(trace)
+import Language.BCoPL.Peano
 
-import Language.BCoPL.Nat (Nat(..))
-import Language.BCoPL.Derivation (Tree(..),Derivation,Deducer,derivation)
+data LessThan1 (n1 :: Nat) (n2 :: Nat) where
+  LSucc1  :: Nat' n -> LessThan1 n (S n)
+  LTrans1 :: Nat' n1 -> Nat' n2 -> Nat' n3 -> LessThan1 n1 n3
+  
+data LessThan2 (n1 :: Nat) (n2 :: Nat) where
+  LZero2 :: Nat' n -> LessThan2 Z (S n)
+  LSuccSucc2 :: Nat' n1 -> Nat' n2 -> LessThan2 n1 n2 -> LessThan2 (S n1) (S n2)
 
-data Judge = LessThan Nat Nat deriving (Eq)
-
-instance Show Judge where
-  show (LessThan m n) = show m ++ " is less than " ++ show n
-
-deduce1 :: Deducer Judge
-deduce1 j = case j of
-  LessThan n (S n')
-    | n == n'    -> [Node ("L-Succ",j) []]
-  LessThan n1 n3 -> [S n1 .. n3] >>= \ n2 ->                -- 反則？
-                    deduce1 (LessThan n1 n2) >>= \ j1 ->
-                    deduce1 (LessThan n2 n3) >>= \ j2 ->
-                    [Node ("L-Trans",j) [j1,j2]]
-  _              -> []
-
-deduce2 :: Deducer Judge
-deduce2 j = case j of
-  LessThan Z      (S _)  -> [Node ("L-Zero",j) []]
-  LessThan (S n1) (S n2) -> deduce2 (LessThan n1 n2) >>= \ j' ->
-                            [Node ("L-SuccSucc",j) [j']]
-  _                      -> []
-
-deduce3 :: Deducer Judge
-deduce3 j = case j of
-  LessThan n (S n')
-    | n == n'        -> [Node ("L-Succ",j) []]
-  LessThan n1 (S n2) -> deduce3 (LessThan n1 n2) >>= \ j' ->
-                        [Node ("L-SuccR",j) [j']]
+data LessThan3 (n1 :: Nat) (n2 :: Nat) where
+  LSucc3 ::  Nat' n -> LessThan3 n (S n)
+  LSuccR3 :: Nat' n1 -> Nat' n2 -> LessThan3 n1 n2 -> LessThan3 n1 (S n2)
