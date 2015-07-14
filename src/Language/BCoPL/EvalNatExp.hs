@@ -40,16 +40,30 @@ deduce j = case j of
                         | n1 <- [Z .. n]
                         , j1 <- deduce (EvalTo e1 n1)
                         , n2 <- [Z .. n]
-                        , j2 <- deduce (EvalTo e2 n2)
                         , j3 <- deduce (OnNat (Nat.Plus n1 n2 n))
-                        ]
-    e1 :*: e2        -> [ Node ("E-Times",j) [j1,j2,j3]
-                        | n1 <- [Z .. ]
-                        , j1 <- deduce (EvalTo e1 n1)
-                        , n2 <- [Z .. ]
                         , j2 <- deduce (EvalTo e2 n2)
-                        , j3 <- deduce (OnNat (Nat.Times n1 n2 n))
                         ]
+    e1 :*: e2        -> case n of
+      Z                -> [ Node ("E-Times",j) [j1,j2,j3]
+                          | j1 <- deduce (EvalTo e1 Z)
+                          , n2 <- [Z ..]
+                          , j2 <- deduce (EvalTo e2 n2)
+                          , j3 <- deduce (OnNat (Nat.Times Z n2 Z))
+                          ]
+                          ++
+                          [ Node ("E-Times",j) [j1,j2,j3]
+                          | j2 <- deduce (EvalTo e2 Z)
+                          , n1 <- [Z ..]
+                          , j1 <- deduce (EvalTo e1 n1)
+                          , j3 <- deduce (OnNat (Nat.Times n1 Z Z))
+                          ]             
+      _                -> [ Node ("E-Times",j) [j1,j2,j3]
+                          | n1 <- [S Z .. ]
+                          , j1 <- deduce (EvalTo e1 n1)
+                          , n2 <- [S Z .. ]
+                          , j2 <- deduce (EvalTo e2 n2)
+                          , j3 <- deduce (OnNat (Nat.Times n1 n2 n))
+                          ]
     _                -> []
 
 session,session' :: IO ()
