@@ -1,56 +1,104 @@
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE NPlusKPatterns #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
 module Language.BCoPL.EvalNatExp (
-    -- * Types
-    Nat(..)
-  , Exp(..)
-  , Judge
-    -- * Deducer
-  , deduce
   ) where
 
-import Language.BCoPL.Nat (Nat(..))
-import qualified Language.BCoPL.Nat as Nat (Judge(..),deduce)
-import Language.BCoPL.Derivation (Tree(..),Derivation,Deducer,derivation)
+import Language.BCoPL.Peano
+import Language.BCoPL.Nat
+import Language.BCoPL.Exp
 
-data Exp = Nat Nat
-         | Exp :+: Exp
-         | Exp :*: Exp
-         deriving (Eq)
+data EvalTo (exp :: Exp) (n :: Nat) where
+  EConst :: Nat' n -> EvalTo (ENat n) n
+  EPlus  :: Exp' e1 -> Exp' e2 -> Nat' n1 -> Nat' n2 -> Nat' n3
+         -> EvalTo e1 n1 -> EvalTo e2 n2 -> Plus n1 n2 n3
+         -> EvalTo (e1 :+ e2) n3
+  ETimes :: Exp' e1 -> Exp' e2 -> Nat' n1 -> Nat' n2 -> Nat' n3
+         -> EvalTo e1 n1 -> EvalTo e2 n2 -> Times n1 n2 n3
+         -> EvalTo (e1 :* e2) n
 
-instance Show Exp where
-  show e = case e of
-    Nat n     -> show n
-    e1 :+: e2 -> show e1 ++ " + " ++ show e2
-    e1 :*: e2 -> show' e1 ++ " * " ++ show' e2
-    where
-      show' e' = case e' of
-        e1' :+: e2' -> "("++show e'++")"
-        _           -> show e'
+-- --------------------------------------------------
 
-data Judge = OnNat Nat.Judge
-           | EvalTo Exp Nat
+ex010801 :: EvalTo (ENat Z :+ ENat (S(S Z))) (S(S Z))
+ex010801 =  EPlus (ENat' Z') (ENat' (S'(S' Z'))) Z' (S'(S' Z')) (S'(S' Z'))
+                  (EConst Z') 
+                  (EConst (S'(S' Z')))
+                  (PZero (S'(S' Z')))
 
-instance Show Judge where
-  show (OnNat jn)   = show jn
-  show (EvalTo e n) = show e ++ " ￬ " ++ show n
+ex010802 :: EvalTo (ENat (S(S Z)) :+ ENat Z) (S(S Z))
+ex010802 =  EPlus (ENat' (S'(S' Z'))) (ENat' Z') (S'(S' Z')) Z' (S'(S' Z'))
+                  (EConst (S'(S' Z')))
+                  (EConst Z') 
+                  (PSucc (S' Z') Z' (S' Z') 
+                         (PSucc Z' Z' Z' 
+                                (PZero Z')))
 
-toJudge :: Derivation Nat.Judge -> Derivation Judge
-toJudge (Node (s,nj) ts) = Node (s,OnNat nj) (map toJudge ts)
+ex010803 :: EvalTo ((ENat (S Z) :+ ENat (S Z)) :+ ENat (S Z)) (S(S(S Z)))
+ex010803 = EPlus (ENat' (S' Z') :+: ENat' (S' Z')) (ENat' (S' Z')) (S'(S' Z')) (S' Z') (S'(S'(S' Z')))
+                 (EPlus (ENat' (S' Z')) (ENat' (S' Z')) (S' Z') (S' Z') (S'(S' Z'))
+                        (EConst (S' Z'))
+                        (EConst (S' Z'))
+                        (PSucc Z' (S' Z') (S' Z')
+                               (PZero (S' Z'))))
+                 (EConst (S' Z'))
+                 (PSucc (S' Z') (S' Z') (S' (S' Z'))
+                        (PSucc Z' (S' Z') (S' Z')
+                               (PZero (S' Z')))) 
+                 
+ex010804 :: EvalTo (ENat (S(S(S Z))) :+ (ENat (S(S Z)) :* ENat (S Z))) (S(S(S(S(S Z)))))
+ex010804 =  EPlus (ENat' (S'(S'(S' Z')))) (ENat' (S'(S' Z')) :*: ENat' (S' Z')) (S'(S'(S' Z'))) (S'(S' Z')) (S'(S'(S'(S'(S' Z')))))
+                  (EConst (S'(S'(S' Z'))))
+                  (ETimes (ENat' (S'(S' Z'))) (ENat' (S' Z')) (S'(S' Z')) (S' Z') (S'(S' Z'))
+                          (EConst (S' (S' Z')))
+                          (EConst (S' Z'))
+                          (TSucc (S' Z') (S' Z') (S' Z') (S'(S' Z'))
+                                 (TSucc Z' (S' Z') Z' (S' Z')
+                                        (TZero (S' Z'))
+                                        (PSucc Z' Z' Z'
+                                               (PZero Z')))
+                                 (PSucc Z' (S' Z') (S' Z')
+                                        (PZero (S' Z')))))
+                  (PSucc (S'(S' Z')) (S'(S' Z')) (S'(S'(S'(S' Z'))))
+                         (PSucc (S' Z') (S'(S' Z')) (S'(S'(S' Z')))
+                                (PSucc Z' (S'(S' Z')) (S'(S' Z'))
+                                       (PZero (S'(S' Z'))))))
 
-deduce :: Deducer Judge
-deduce j = case j of
-  OnNat nj    -> map toJudge (Nat.deduce nj)
-  EvalTo e n  -> case e of
-    Nat n' | n' == n -> [Node ("E-Const",j) []]
-    e1 :+: e2        -> [Z .. n]                           >>= \ n1 ->
-                        deduce (EvalTo e1 n1)              >>= \ j1 ->
-                        [Z .. n]                           >>= \ n2 ->
-                        deduce (EvalTo e2 n2)              >>= \ j2 ->
-                        deduce (OnNat (Nat.Plus n1 n2 n))  >>= \ j3 ->
-                        [Node ("E-Plus",j) [j1,j2,j3]]
-    e1 :*: e2        -> [Z .. n]                           >>= \ n1 ->
-                        deduce (EvalTo e1 n1)              >>= \ j1 ->
-                        [Z .. n]                           >>= \ n2 ->
-                        deduce (EvalTo e2 n2)              >>= \ j2 ->
-                        deduce (OnNat (Nat.Times n1 n2 n)) >>= \ j3 ->
-                        [Node ("E-Times",j) [j1,j2,j3]]
-    _                -> []
+ex010805 :: EvalTo ((ENat (S(S Z)) :+ ENat (S(S Z))) :* ENat Z) Z
+ex010805 =  ETimes (ENat' (S'(S' Z')) :+: ENat' (S'(S' Z'))) (ENat' Z') (S'(S'(S'(S' Z')))) Z' Z'
+                   (EPlus (ENat' (S'(S' Z'))) (ENat' (S'(S' Z'))) (S'(S' Z')) (S'(S' Z')) (S'(S'(S'(S' Z'))))
+                          (EConst (S'(S' Z')))
+                          (EConst (S'(S' Z')))
+                          (PSucc (S' Z') (S'(S' Z')) (S'(S'(S' Z')))
+                                 (PSucc Z' (S'(S' Z')) (S'(S' Z'))
+                                        (PZero (S'(S' Z'))))))
+                   (EConst Z')
+                   (TSucc (S'(S'(S' Z'))) Z' Z' Z'
+                          (TSucc (S'(S' Z')) Z' Z' Z'
+                                 (TSucc (S' Z') Z' Z' Z'
+                                        (TSucc Z' Z' Z' Z'
+                                               (TZero Z')
+                                               (PZero Z'))
+                                        (PZero Z'))
+                                 (PZero Z'))
+                          (PZero Z'))
+
+ex010806 :: EvalTo (ENat Z :* (ENat (S(S Z)) :+ ENat (S(S(Z))))) Z
+ex010806 = ETimes (ENat' Z') (ENat' (S'(S' Z')) :+: ENat' (S'(S' Z'))) Z' (S'(S'(S'(S' Z')))) Z'
+                  (EConst Z')
+                  (EPlus (ENat' (S'(S' Z'))) (ENat' (S'(S' Z'))) (S'(S' Z')) (S'(S' Z')) (S'(S'(S'(S' Z'))))
+                         (EConst (S'(S' Z')))
+                         (EConst (S'(S' Z')))
+                         (PSucc (S' Z') (S'(S' Z')) (S'(S'(S' Z')))
+                                (PSucc Z' (S'(S' Z')) (S'(S' Z'))
+                                       (PZero (S'(S' Z'))))))
+                  (TZero (S'(S'(S'(S' Z')))))

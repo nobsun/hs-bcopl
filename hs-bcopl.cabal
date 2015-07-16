@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                hs-bcopl
-version:             0.2
+version:             0.2.1.4.3
 -- synopsis:            
 -- description:         
 homepage:            http://github.com/nobsun/hs-bcopl
@@ -20,15 +20,13 @@ library
   exposed-modules:       Language.BCoPL.Peano
                        , Language.BCoPL.Nat
                        , Language.BCoPL.Exp
---                     , Language.BCoPL.Diagram
---                     , Language.BCoPL.Derivation
---                     , Language.BCoPL.CompareNat
---                     , Language.BCoPL.EvalNatExp
+                       , Language.BCoPL.CompareNat
+                       , Language.BCoPL.EvalNatExp
 --                     , Language.BCoPL.ReduceNatExp
   -- other-modules:       
   -- other-extensions:    
   build-depends:       base >=4.8 && <4.9
                      , containers
---                   , boxes
+                     , singletons
   hs-source-dirs:      src
   default-language:    Haskell2010
