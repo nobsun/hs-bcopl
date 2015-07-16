@@ -7,10 +7,12 @@
 
 ### 第1章
 
-- ``Language.BCoPL.Nat.hs``： 自然数の加算・乗算
-- ``Language.BCoPL.CompareNat.hs``： 自然数の比較
-- ``Language.BCoPL.EvalNatExp.hs``： 算術式の評価
-- ``Language.BCoPL.ReduceNatExp.hs``： 算術式の簡約
+- ``Language.BCoPL.Peano``： ペアノ自然数
+- ``Language.BCoPL.Nat``： 自然数の加算・乗算
+- ``Language.BCoPL.CompareNat``： 自然数の比較
+- ``Language.BCoPL.Exp``： 算術式
+- ``Language.BCoPL.EvalNatExp``： 算術式の評価
+- ``Language.BCoPL.ReduceNatExp``： 算術式の簡約
 
 使用例（出力の改行は編集でいれたもの）
 
