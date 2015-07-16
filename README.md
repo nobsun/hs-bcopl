@@ -8,3 +8,12 @@ REPLに型エラーなしにロードできれば，正しい導出であると�
 判断を表す式を評価したら導出木が出力されるといいのですが，それができない（残念な）システムです．
 『判断』をShowクラスのインスタンスにする方法をご存知でしたら教えていただければ幸いです．
 
+## 第1章
+
+- Language.BCoPL.Peano -- ペアノ自然数
+- Language.BCoPL.Nat -- 自然数の加算・乗算
+- Language.BCoPL.CompareNat -- 算術式の評価
+- Language.BCoPL.Exp -- 算術式
+- Language.BCoPL.EvalNatExp -- 算術式の評価
+- Language.BCoPL.ReduceNatExp -- 算術式の評価
+
