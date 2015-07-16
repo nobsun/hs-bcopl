@@ -12,7 +12,7 @@ REPLに型エラーなしにロードできれば，正しい導出であると�
 
 - Language.BCoPL.Peano -- ペアノ自然数
 - Language.BCoPL.Nat -- 自然数の加算・乗算
-- Language.BCoPL.CompareNat -- 算術式の評価
+- Language.BCoPL.CompareNat -- 自然数の比較
 - Language.BCoPL.Exp -- 算術式
 - Language.BCoPL.EvalNatExp -- 算術式の評価
 - Language.BCoPL.ReduceNatExp -- 算術式の評価
