@@ -17,3 +17,7 @@ REPLに型エラーなしにロードできれば，正しい導出であると�
 - Language.BCoPL.EvalNatExp -- 算術式の評価
 - Language.BCoPL.ReduceNatExp -- 算術式の評価
 
+## 第2章
+
+- Language.BCoPL.MetaTheory.hs -- メタ定理(定理2.4まで)
+
