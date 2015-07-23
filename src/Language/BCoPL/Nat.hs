@@ -11,6 +11,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE ImplicitParams #-}
 module Language.BCoPL.Nat where
 
 import Language.BCoPL.Peano
@@ -25,36 +26,19 @@ data Times (n1 :: Nat) (n2 :: Nat) (n4 :: Nat) where
         -> Times n1 n2 n3 -> Plus n2 n3 n4
         -> Times (S n1) n2 n4
 
-{- PlusとTimesをShowのインスタンスにできると便利なのだが -}
-{-
-instance Show (Nat' n) => Show (Plus Z n n) where
+instance Show (Plus n1 n2 n3) where
   show (PZero n) = unwords [show Z',"plus",show n,"is",show n,"by","P-Zero","{","}"]
-
-instance (Show (Nat' n1), Show (Nat' n2), Show (Nat' n3), Show (Plus n1 n2 n3))
-  => Show (Plus (S n1) n2 (S n3)) where
-  show (PSucc n1 n2 n3 j1)
+  show (PSucc n1 n2 n3 k)
     = unwords [show (S' n1),"plus",show n2,"is",show (S' n3),"by","P-Succ"
-              ,"{",show j1,"}"]
+              ,"{",show k,"}"]
 
-instance (Show (Nat' n))
-  => Show (Times Z n Z) where
-  show (TZero n) = unwords [show Z',"times", show n,"is",show Z',"by","{","}"]
-
-instance (Show (Nat' n1),Show (Nat' n2),Show  (Nat' (n3 :: Nat)) ,Show (Nat' n4)
-         ,Show (Times n1 n2 n3), Show (Plus n2 n3 n4))
-       => Show (Times (S n1) n2 n4) where
-  show (TSucc n1 n2 n3 n4 j1 j2)
-    = unwords [show (S' n1),"times",show n2,"is",show n4,"by","T-Succ","{"
-              ,show j1,";",show j2
+instance Show (Times n1 n2 n3) where
+  show (TZero n) = unwords [show Z',"times",show n,"is",show Z',"by","T-Zero","{","}"]
+  show (TSucc n1 n2 _ n3 j k)
+    = unwords [show (S' n1),"times",show n2,"is",show n3,"by","T-Succ","{"
+              ,show j,";",show k
               ,"}"
               ]
--}
--- instance Show (Plus n1 n2 n3) where
---   show _ = error "Show (Plus n1 n2 n3): Invalid Overlapping"
-
--- instance Show (Times n1 n2 n3) where
---   show _ = error "Show (Times n1 n2 n3): Invalid Overlapping"
-
 
 -- 練習問題 1.2 (1)
 
@@ -126,5 +110,4 @@ ex010403 =  TSucc (S'(S' Z')) Z' Z' Z'
                                 (PZero Z'))
                          (PZero Z'))
                   (PZero Z')
-
 
