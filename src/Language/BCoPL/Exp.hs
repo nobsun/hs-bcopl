@@ -61,20 +61,13 @@ data Exp' (e :: Exp) where
   (:+:) :: Exp' e1 -> Exp' e2 -> Exp' (e1 :+ e2)
   (:*:) :: Exp' e1 -> Exp' e2 -> Exp' (e1 :* e2)
 
-instance Show (Nat' n) => Show (Exp' (ENat n)) where
-  show (ENat' n) = show n
-
-instance (Show (Exp' e1), Show (Exp' e2))
-         => Show (Exp' (e1 :+ e2)) where
+instance Show (Exp' e) where
+  show (ENat' n)   = show n
   show (e1 :+: e2) = unwords [show e1,"+",show e2]
-
-instance (Show (Exp' e1), Show (Exp' e2))
-         => Show (Exp' (e1 :* e2)) where
   show (e1 :*: e2) = unwords [show' e1,"*",show' e2]
     where
-      show' :: Show (Exp' e) => Exp' e -> String
       show' e@(_ :+: _) = "("++show e++")"
-      show' e           = show e           
+      show' e           = show e
 
 -- ----------------------------------------------------
 
