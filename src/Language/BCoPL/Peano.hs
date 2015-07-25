@@ -26,12 +26,13 @@ instance Show (Nat' n) where
   show (S' n) = "S("++show n++")"
 
 instance Read (Nat' Z) where
-  readsPrec _ s = case trim s of "Z" -> [(Z',"")]
+  readsPrec _ s = case trim s of
+    "Z" -> [(Z',"")]
+    _   -> []
 
 instance Read (Nat' n) => Read (Nat' (S n)) where
   readsPrec _ s = case trim s of
-    'S':'(':rs -> [(S' (read (init rs)),"")]
-    'S':rs     -> [(S' (read rs),"")]
+    'S':'(':rs -> [(S'(read (init rs)),"")]
     _          -> []
 
 trim :: String -> String
