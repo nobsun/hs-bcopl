@@ -1,5 +1,3 @@
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE NPlusKPatterns #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DataKinds #-}
@@ -14,7 +12,7 @@
 module Language.BCoPL.EvalNatExp (
   ) where
 
-import Language.BCoPL.Peano
+import Language.BCoPL.Peano hiding ((:+),(:+:),(:*),(:*:))
 import Language.BCoPL.Nat
 import Language.BCoPL.Exp
 

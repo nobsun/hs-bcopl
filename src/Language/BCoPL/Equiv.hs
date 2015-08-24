@@ -16,3 +16,4 @@ data a :=: b where
   Refl  :: a :=: a
   Sym   :: a :=: b -> b :=: a
   Trans :: a :=: b -> b :=: c -> a :=: c
+  Cong  :: a :=: b -> f a :=: f b

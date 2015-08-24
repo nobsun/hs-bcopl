@@ -29,6 +29,6 @@ library
   -- other-extensions:    
   build-depends:       base >=4.8 && <4.9
                      , containers
-                     , singletons
+  --                    , singletons
   hs-source-dirs:      src
   default-language:    Haskell2010

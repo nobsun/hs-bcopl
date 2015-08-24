@@ -7,7 +7,7 @@
 module Language.BCoPL.Exp where
 
 import Text.ParserCombinators.ReadP
-import Language.BCoPL.Peano
+import Language.BCoPL.Peano hiding ((:+),(:+:),(:*),(:*:))
 
 data Exp = ENat Nat
          | Exp :+ Exp
@@ -91,4 +91,3 @@ ex010706 = read "(S(Z) * (S(S(Z)) +Z)) * S(S(S(Z)))"
 
 ex010707 :: Exp
 ex010707 = read "S(Z) * ((S(S(Z)) +Z) * S(S(S(Z))))"
-

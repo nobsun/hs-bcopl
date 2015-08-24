@@ -1,5 +1,3 @@
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE NPlusKPatterns #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DataKinds #-}
@@ -11,7 +9,6 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE AllowAmbiguousTypes #-}
-{-# LANGUAGE ImplicitParams #-}
 module Language.BCoPL.Nat where
 
 import Language.BCoPL.Peano
@@ -39,6 +36,23 @@ instance Show (Times n1 n2 n3) where
               ,show j,";",show k
               ,"}"
               ]
+
+instance Read (Plus Z Z Z) where
+  readsPrec _ s = case words s of
+    "Z":"plus":"Z":"is":"Z":_ -> [(PZero Z',"")]
+instance Read (Nat' n) => Read (Plus Z (S n) (S n)) where
+  readsPrec _ s = case words s of
+    "Z":"plus":ns:"is":_:_ -> [(PZero (S'(read ns)),"")]
+instance (Read (Nat' n1),Read (Nat' n2),Read (Nat' n3),
+          Read (Plus n1 n2 n3)) => Read (Plus (S n1) n2 (S n3)) where
+  readsPrec _ s = case words s of
+    ('S':'(':rs1):"plus":rs2:"is":('S':'(':rs3):_
+      -> [(PSucc n1 n2 n3 (read (unwords [init rs1,"plus",rs2,"is",init rs3])),"")]
+         where 
+           n1 = read (init rs1)
+           n2 = read rs2
+           n3 = read (init rs3)
+
 
 -- 練習問題 1.2 (1)
 
@@ -110,4 +124,3 @@ ex010403 =  TSucc (S'(S' Z')) Z' Z' Z'
                                 (PZero Z'))
                          (PZero Z'))
                   (PZero Z')
-
