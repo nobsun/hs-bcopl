@@ -52,7 +52,7 @@ plusUnique (S' n1) n2 (S' n3) (S' n4) (PSucc _ _ _ j) (PSucc _ _ _ j')
   = Cong (plusUnique n1 n2 n3 n4 j j')
 
 -- 定理 2.3 加法閉包性
-
+{-
 plusClosure :: Nat' n1 -> Nat' n2 -> n3 :=: (n1 :+ n2) -> Plus n1 n2 n3
 plusClosure Z' n2 Refl      = PZero n2
 plusClosure (S' n1) n2 Refl = PSucc n1 n2 (n1 :+: n2) (plusClosure n1 n2 Refl)
@@ -121,7 +121,7 @@ timesUnique Z' _ _ _ (TZero _) (TZero _) = Refl
 timesUnique (S' n1) n2 n3 n4 (TSucc _ _ n n3' j j') (TSucc _ _ n' n4' k k')
   = case timesUnique n1 n2 n n' j k of
       Refl -> plusUnique n2 n n3' n4' j' k'
-  
+-- -}
 {-
 0201: unitOnPlus :: ∀n . Nat n → (0 plus n is n, n plus 0 is n)
       zeroPlus   :: ∀n . Nat n → 0 plus n is n
@@ -146,7 +146,7 @@ timesUnique (S' n1) n2 n3 n4 (TSucc _ _ n n3' j j') (TSucc _ _ n' n4' k k')
 0207: timesClosure :: ∀n1 n2 . n3 ≡ n1 * n2 → n1 times n2 is n3
  -}
 -- 定理 2.7 乗法閉包性
-
+{-
 timesClosure :: Nat' n1 -> Nat' n2 -> n3 :=: (n1 :* n2) -> Times n1 n2 n3
 timesClosure Z' n2 Refl = TZero n2
 timesClosure (S' n1) n2 Refl
@@ -155,7 +155,7 @@ timesClosure (S' n1) n2 Refl
      j@(TSucc _ _ _ n4 _ k) -> TSucc n1 n2 n4 (S' n1 :*: n2) j k'
                                where 
                                  k' = undefined k
-
+-- -}
 -- -- 定理 2.8 乗法零元
 
 -- theorem0208 :: Nat' n -> (Times Z n Z, Times n Z Z)
