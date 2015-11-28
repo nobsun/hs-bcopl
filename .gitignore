@@ -15,5 +15,5 @@ cabal.sandbox.config
 *.aux
 *.hp
 TAGS
-stack.yml
+stack.yaml
 .stack-work/
