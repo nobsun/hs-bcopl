@@ -19,6 +19,7 @@ import Language.BCoPL.CompareNat
 import Language.BCoPL.Nat
 
 import Language.BCoPL.Equiv
+import Language.BCoPL.Exists
 
 -- ---------------------------------------------
 
