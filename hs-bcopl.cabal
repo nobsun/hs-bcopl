@@ -24,6 +24,7 @@ library
                        , Language.BCoPL.EvalNatExp
                        , Language.BCoPL.ReduceNatExp
                        , Language.BCoPL.Equiv
+                       , Language.BCoPL.Exists
                        , Language.BCoPL.MetaTheory
   -- other-modules:       
   -- other-extensions:    
