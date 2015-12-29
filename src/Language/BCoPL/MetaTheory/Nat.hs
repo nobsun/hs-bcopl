@@ -23,14 +23,25 @@ import Language.BCoPL.Equiv
 import Language.BCoPL.Exists
 
 -- ---------------------------------------------
--- $setup
--- >>> type family (m :: Nat) :+ (n :: Nat) :: Nat
--- >>> type instance Z :+ n = n
--- >>> type instance (S m) :+ n = S (m :+ n)
--- >>> type family (m :: Nat) :* (n :: Nat) :: Nat
--- >>> type instance     Z :* n = Z
--- >>> type instance (S m) :* n = (m :* n) :+ n
--- >>> let {add :: Nat' n1 -> Nat' n2 -> Nat' (n1 :+ n2); add Z' n2 = n2; add (S' n1) n2 = S' (add n1 n2) }
+-- 
+-- type family (m :: Nat) :+ (n :: Nat) :: Nat
+-- type instance Z :+ n = n
+-- type instance (S m) :+ n = S (m :+ n)
+-- type family (m :: Nat) :* (n :: Nat) :: Nat
+-- type instance     Z :* n = Z
+-- type instance (S m) :* n = (m :* n) :+ n
+-- let {add :: Nat' n1 -> Nat' n2 -> Nat' (n1 :+ n2); add Z' n2 = n2; add (S' n1) n2 = S' (add n1 n2) }
+
+type family (m :: Nat) :+ (n :: Nat) :: Nat
+type instance Z :+ n = n
+type instance (S m) :+ n = S (m :+ n)
+type family (m :: Nat) :* (n :: Nat) :: Nat
+type instance     Z :* n = Z
+type instance (S m) :* n = (m :* n) :+ n
+
+add :: Nat' n1 -> Nat' n2 -> Nat' (n1 :+ n2)
+add Z' n2 = n2
+add (S' n1) n2 = S' (add n1 n2)
 
 -- 定理 2.1 加法単位元
 
@@ -61,7 +72,7 @@ eqZeroPlus _ _ (PZero _) = Refl
 
 eqPlusZero :: Nat' n -> Nat' n' -> Plus n Z n' -> n :=: n'
 eqPlusZero Z' n' (PZero _)  = eqZeroPlus Z' n' (PZero n')
-eqPlusZero (S' n) _ (PSucc _ _ n' j) = Cong (eqPlusZero n n' j)
+eqPlusZero (S' n) _ (PSucc _ _ n' j) = eqCong (eqPlusZero n n' j)
 
 -- 定理 2.2 加法唯一性
 
@@ -74,9 +85,9 @@ plusUnique :: Nat' n1 -> Nat' n2 -> Nat' n3 -> Nat' n4
            -> Plus n1 n2 n3 -> Plus n1 n2 n4
            -> n3 :=: n4
 plusUnique Z' n2 n3 n4 j@(PZero _) k@(PZero _) 
-  = Trans (Sym (eqZeroPlus n2 n3 j)) (eqZeroPlus n2 n4 k)
+  = eqTrans (eqSym (eqZeroPlus n2 n3 j)) (eqZeroPlus n2 n4 k)
 plusUnique (S' n1) n2 (S' n3) (S' n4) (PSucc _ _ _ j) (PSucc _ _ _ j')
-  = Cong (plusUnique n1 n2 n3 n4 j j')
+  = eqCong (plusUnique n1 n2 n3 n4 j j')
 
 -- 定理 2.3 加法閉包性
 
