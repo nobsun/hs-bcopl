@@ -2,12 +2,10 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FlexibleContexts #-}
 module Language.BCoPL.Exp where
 
 import Text.ParserCombinators.ReadP
-import Language.BCoPL.Peano hiding ((:+),(:+:),(:*),(:*:))
+import Language.BCoPL.Peano
 
 data Exp = ENat Nat
          | Exp :+ Exp

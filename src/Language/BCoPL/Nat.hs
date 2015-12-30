@@ -1,14 +1,10 @@
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE ConstraintKinds #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE EmptyCase #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Language.BCoPL.Nat where
 
 import Language.BCoPL.Peano
@@ -38,11 +34,13 @@ instance Show (Times n1 n2 n3) where
               ]
 
 instance Read (Plus Z Z Z) where
-  readsPrec _ s = case words s of
+  readsPrec _ s = case words s of 
     "Z":"plus":"Z":"is":"Z":_ -> [(PZero Z',"")]
+    pat                       -> case pat of {}
 instance Read (Nat' n) => Read (Plus Z (S n) (S n)) where
   readsPrec _ s = case words s of
     "Z":"plus":ns:"is":_:_ -> [(PZero (S'(read ns)),"")]
+    pat                    -> case pat of {}
 instance (Read (Nat' n1),Read (Nat' n2),Read (Nat' n3),
           Read (Plus n1 n2 n3)) => Read (Plus (S n1) n2 (S n3)) where
   readsPrec _ s = case words s of
@@ -52,7 +50,7 @@ instance (Read (Nat' n1),Read (Nat' n2),Read (Nat' n3),
            n1 = read (init rs1)
            n2 = read rs2
            n3 = read (init rs3)
-
+    pat -> case pat of {}
 
 -- 練習問題 1.2 (1)
 

@@ -1,18 +1,7 @@
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE NPlusKPatterns #-}
 {-# LANGUAGE GADTs #-}
-{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE ConstraintKinds #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE AllowAmbiguousTypes #-}
-module Language.BCoPL.CompareNat (
-  ) where
+module Language.BCoPL.CompareNat where
 
 import Language.BCoPL.Peano
 
@@ -25,7 +14,7 @@ data LessThan1 (n1 :: Nat) (n2 :: Nat) where
 instance Show (LessThan1 n1 n2) where
   show (LSucc1 n)
     = unwords [show n,"is","less","than",show (S' n),"by","L-Succ","{","}"]
-  show (LTrans1 n1 n2 n3 j1 j2)
+  show (LTrans1 n1 _ n3 j1 j2)
     = unwords [show n1,"is","less","than",show n3,"by","L-Trans","{"
               ,show j1,";",show j2
               ,"}"
