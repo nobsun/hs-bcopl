@@ -19,5 +19,6 @@ REPLに型エラーなしにロードできれば，正しい導出であると�
 
 ## 第2章
 
-- Language.BCoPL.MetaTheory.hs -- メタ定理(定理2.4まで)
+- Language.BCoPL.MetaTheory.Nat -- 自然数の加算・乗算に関するメタ定理
+
 
