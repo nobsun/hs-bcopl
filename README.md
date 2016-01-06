@@ -20,5 +20,5 @@ REPLに型エラーなしにロードできれば，正しい導出であると�
 ## 第2章
 
 - Language.BCoPL.MetaTheory.Nat -- 自然数の加算・乗算に関するメタ定理
-
+- Language.BCoPL.MetaTheory.CompareNat -- 自然数の比較に関するメタ定理
 
