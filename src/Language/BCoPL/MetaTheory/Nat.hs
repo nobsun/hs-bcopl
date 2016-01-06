@@ -29,6 +29,7 @@ import Language.BCoPL.Exists
 -- >>> type instance     Z :* n = Z
 -- >>> type instance (S m) :* n = (m :* n) :+ n
 -- >>> let {add :: Nat' n1 -> Nat' n2 -> Nat' (n1 :+ n2); add Z' n2 = n2; add (S' n1) n2 = S' (add n1 n2) }
+-- >>> type family (m :: Nat) :- (n :: Nat) :: Nat
 
 -- 定理 2.1 加法単位元
 

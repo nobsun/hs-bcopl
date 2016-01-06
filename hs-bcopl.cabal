@@ -23,6 +23,7 @@ library
                        , Language.BCoPL.Equiv
                        , Language.BCoPL.Exists
                        , Language.BCoPL.MetaTheory.Nat
+                       , Language.BCoPL.MetaTheory.CompareNat
   -- other-modules:       
   -- other-extensions:    
   build-depends:         base >=4.8 && <4.9

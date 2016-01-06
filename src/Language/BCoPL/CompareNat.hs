@@ -6,10 +6,9 @@ module Language.BCoPL.CompareNat where
 import Language.BCoPL.Peano
 
 data LessThan1 (n1 :: Nat) (n2 :: Nat) where
-  LSucc1  :: Nat' n -> LessThan1 n (S n)
-  LTrans1 :: Nat' n1 -> Nat' n2 -> Nat' n3
-          -> LessThan1 n1 n2 -> LessThan1 n2 n3
-          -> LessThan1 n1 n3
+  LSucc1  :: Nat' n -> LessThan1 n (S n)  -- a < 1+a
+  LTrans1 :: Nat' n1 -> Nat' n2 -> Nat' n3 -> LessThan1 n1 n2 -> LessThan1 n2 n3
+          -> LessThan1 n1 n3              -- a < b, b < c => a < c
 
 instance Show (LessThan1 n1 n2) where
   show (LSucc1 n)
@@ -21,8 +20,9 @@ instance Show (LessThan1 n1 n2) where
               ]
 
 data LessThan2 (n1 :: Nat) (n2 :: Nat) where
-  LZero2 :: Nat' n -> LessThan2 Z (S n)
-  LSuccSucc2 :: Nat' n1 -> Nat' n2 -> LessThan2 n1 n2 -> LessThan2 (S n1) (S n2)
+  LZero2 :: Nat' n -> LessThan2 Z (S n)   -- 0 < 1+a
+  LSuccSucc2 :: Nat' n1 -> Nat' n2 -> LessThan2 n1 n2
+             -> LessThan2 (S n1) (S n2)   -- a < b => 1+a < 1+b
 
 instance Show (LessThan2 n1 n2) where
   show (LZero2 n)
@@ -34,8 +34,9 @@ instance Show (LessThan2 n1 n2) where
               ]
 
 data LessThan3 (n1 :: Nat) (n2 :: Nat) where
-  LSucc3 ::  Nat' n -> LessThan3 n (S n)
-  LSuccR3 :: Nat' n1 -> Nat' n2 -> LessThan3 n1 n2 -> LessThan3 n1 (S n2)
+  LSucc3 ::  Nat' n -> LessThan3 n (S n) -- a < 1+a
+  LSuccR3 :: Nat' n1 -> Nat' n2 -> LessThan3 n1 n2
+          -> LessThan3 n1 (S n2)         -- a < b => a < 1+b
 
 instance Show (LessThan3 n1 n2) where
   show (LSucc3 n) 
