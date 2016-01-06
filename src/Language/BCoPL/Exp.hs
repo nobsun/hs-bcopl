@@ -11,6 +11,11 @@ data Exp = ENat Nat
          | Exp :+ Exp
          | Exp :* Exp
 
+data Exp' (e :: Exp) where
+  ENat' :: Nat' n -> Exp' (ENat n)
+  (:+:) :: Exp' e1 -> Exp' e2 -> Exp' (e1 :+ e2)
+  (:*:) :: Exp' e1 -> Exp' e2 -> Exp' (e1 :* e2)
+
 instance Show Exp where
   show (ENat n) = show n
   show (e1 :+ e2) = show e1 ++ " + " ++ show e2
@@ -53,11 +58,6 @@ parens p =  do { skipSpaces
                ; char ')'
                ; return c
                }
-
-data Exp' (e :: Exp) where
-  ENat' :: Nat' n -> Exp' (ENat n)
-  (:+:) :: Exp' e1 -> Exp' e2 -> Exp' (e1 :+ e2)
-  (:*:) :: Exp' e1 -> Exp' e2 -> Exp' (e1 :* e2)
 
 instance Show (Exp' e) where
   show (ENat' n)   = show n

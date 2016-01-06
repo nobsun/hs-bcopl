@@ -15,7 +15,7 @@ data EvalTo (exp :: Exp) (n :: Nat) where
          -> EvalTo (e1 :+ e2) n3
   ETimes :: Exp' e1 -> Exp' e2 -> Nat' n1 -> Nat' n2 -> Nat' n3
          -> EvalTo e1 n1 -> EvalTo e2 n2 -> Times n1 n2 n3
-         -> EvalTo (e1 :* e2) n
+         -> EvalTo (e1 :* e2) n3
 
 -- --------------------------------------------------
 

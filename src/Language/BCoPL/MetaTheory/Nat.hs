@@ -27,9 +27,11 @@ import Language.BCoPL.Exists
 -- >>> type instance (S m) :+ n = S (m :+ n)
 -- >>> type family (m :: Nat) :* (n :: Nat) :: Nat
 -- >>> type instance     Z :* n = Z
--- >>> type instance (S m) :* n = (m :* n) :+ n
+-- >>> type instance (S m) :* n = n :+ (m :* n)
 -- >>> let {add :: Nat' n1 -> Nat' n2 -> Nat' (n1 :+ n2); add Z' n2 = n2; add (S' n1) n2 = S' (add n1 n2) }
--- >>> type family (m :: Nat) :- (n :: Nat) :: Nat
+-- >>> let {mul :: Nat' n1 -> Nat' n2 -> Nat' (n1 :* n2); mul Z' n2 = Z'; mul (S' n1) n2 = add n2 (mul n1 n2) }
+-- >>> let one = S' Z'
+-- >>> let two = S'(S' Z')
 
 -- 定理 2.1 加法単位元
 
@@ -154,7 +156,9 @@ plusAssocL n1 n2 n3 n4 n5 p1 p2 = case plusAssocR n3 n2 n1 n4 n5 (plusComm n2 n3
   ExIntro n6 (PlusAssocR (p5,p6)) -> ExIntro n6 (PlusAssocL (plusComm n2 n1 n6 p5, plusComm n3 n6 n5 p6))
 
 -- 定理 2.6 乗法唯一性
-
+-- | 乗法唯一性
+-- >>> timesUnique one two two (mul one two) (TSucc Z' two Z' two (TZero two) (plusZero two)) (TSucc Z' two (mul Z' two) (mul one two) (TZero two) (plusZero two))
+-- Refl
 timesUnique :: Nat' n1 -> Nat' n2 -> Nat' n3 -> Nat' n4
             -> Times n1 n2 n3 -> Times n1 n2 n4
             -> n3 :=: n4
@@ -165,9 +169,9 @@ timesUnique n1 n2 n3 n4 j k = case n1 of
       pat     -> case pat of {}
     pat     -> case pat of {}
   S' n1' -> case j of
-    TSucc _ _ n n3' j' j'' -> case k of
-      TSucc _ _ n' n4' k' k'' -> case timesUnique n1' n2 n n' j' k' of
-        Refl -> plusUnique n2 n n3' n4' j'' k''
+    TSucc _ _ n _ j' j'' -> case k of
+      TSucc _ _ n' _ k' k'' -> case timesUnique n1' n2 n n' j' k' of
+        Refl -> plusUnique n2 n n3 n4 j'' k''
       pat -> case pat of {}
     pat -> case pat of {}
 
