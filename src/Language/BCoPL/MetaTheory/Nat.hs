@@ -22,14 +22,6 @@ import Language.BCoPL.Exists
 -- >>> :set -XScopedTypeVariables
 -- >>> :set -XFlexibleInstances
 -- >>> :set -XUndecidableInstances
--- >>> type family (m :: Nat) :+ (n :: Nat) :: Nat
--- >>> type instance Z :+ n = n
--- >>> type instance (S m) :+ n = S (m :+ n)
--- >>> type family (m :: Nat) :* (n :: Nat) :: Nat
--- >>> type instance     Z :* n = Z
--- >>> type instance (S m) :* n = n :+ (m :* n)
--- >>> let {add :: Nat' n1 -> Nat' n2 -> Nat' (n1 :+ n2); add Z' n2 = n2; add (S' n1) n2 = S' (add n1 n2) }
--- >>> let {mul :: Nat' n1 -> Nat' n2 -> Nat' (n1 :* n2); mul Z' n2 = Z'; mul (S' n1) n2 = add n2 (mul n1 n2) }
 -- >>> let one = S' Z'
 -- >>> let two = S'(S' Z')
 
@@ -87,7 +79,16 @@ plusUnique n1 n2 n3 n4 j k = case n1 of
         pat              -> case pat of {}
       pat    -> case pat of {}
     pat    -> case pat of {}
- 
+
+
+addUnique :: Nat' n1 -> Nat' n2 -> Nat' n3 -> Plus n1 n2 n3 -> (n3 :=: (n1 :+ n2))
+addUnique n1 n2 n3 p = case n1 of
+  Z'     -> case p of
+  S' n1' -> case p of
+    PSucc n1' n2 n4 q -> case addUnique n1' n2 n4 q of
+      Refl -> plusUnique (S' n1') n2 n3 (S' n4) p p
+    pat -> case pat of {}
+
 -- 定理 2.3 加法閉包性
 
 -- | 加法閉包性
@@ -102,6 +103,7 @@ plusClosure (S' n1) n2 = case plusClosure n1 n2 of
 
 instance Show (Exists Nat' (Plus n1 n2)) where
   show (ExIntro n3 p) = "∃ x::"++show n3++" . "++show p
+
 
 -- 定理 2.4 加法可換律
 
@@ -126,6 +128,21 @@ plusSucc n1 n2 n3 p = case n1 of
       PSucc _ _ _ p' -> PSucc n1' (S' n2) n3 (plusSucc n1' n2 n3' p')
       pat            -> case pat of {}
     pat    -> case pat of {}
+
+succPlusRev :: Nat' n1 -> Nat' n2 -> Nat' n3 -> Plus (S n1) n2 (S n3) -> Plus n1 n2 n3
+succPlusRev _ _ _ p = case p of
+  PSucc _ _ _ q -> q
+  pat -> case pat of {}
+
+plusSuccRev :: Nat' n1 -> Nat' n2 -> Nat' n3 -> Plus n1 (S n2) (S n3) -> Plus n1 n2 n3
+plusSuccRev n1 n2 n3 p = plusComm n2 n1 n3 (succPlusRev n2 n1 n3 (plusComm n1 (S' n2) (S' n3) p))
+
+
+uniqSucc :: Nat' n1 -> Nat' n2 -> (S n1 :+ n2) :=: (n1 :+ S n2)
+uniqSucc n1 n2 = case plusClosure n1 n2 of
+  ExIntro n3 p -> case addUnique (S' n1) n2 (S' n3) (succPlus n1 n2 n3 p) of
+    Refl -> case addUnique n1 (S' n2) (S' n3) (plusSucc n1 n2 n3 p) of
+      Refl -> Refl
 
 -- 定理 2.5 加法結合律
 

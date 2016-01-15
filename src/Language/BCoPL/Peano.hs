@@ -1,4 +1,6 @@
+{-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -31,3 +33,16 @@ instance Read (Nat' n) => Read (Nat' (S n)) where
        
 trim :: String -> String
 trim = dropWhileEnd isSpace . dropWhile isSpace
+
+type family (m :: Nat) :+ (n :: Nat) :: Nat
+type instance Z :+ n = n
+type instance (S m) :+ n = S (m :+ n)
+
+type family (m :: Nat) :* (n :: Nat) :: Nat
+type instance     Z :* n = Z
+type instance (S m) :* n = n :+ (m :* n)
+
+add :: Nat' n1 -> Nat' n2 -> Nat' (n1 :+ n2)
+add n1 n2 = case n1 of
+  Z'     -> n2
+  S' n1' -> S' (add n1' n2)

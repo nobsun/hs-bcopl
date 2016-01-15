@@ -12,20 +12,20 @@ data EvalTo (exp :: Exp) (n :: Nat) where
   EConst :: Nat' n -> EvalTo (ENat n) n
   EPlus  :: Exp' e1 -> Exp' e2 -> Nat' n1 -> Nat' n2 -> Nat' n3
          -> EvalTo e1 n1 -> EvalTo e2 n2 -> Plus n1 n2 n3
-         -> EvalTo (e1 :+ e2) n3
+         -> EvalTo (e1 :＋ e2) n3
   ETimes :: Exp' e1 -> Exp' e2 -> Nat' n1 -> Nat' n2 -> Nat' n3
          -> EvalTo e1 n1 -> EvalTo e2 n2 -> Times n1 n2 n3
-         -> EvalTo (e1 :* e2) n3
+         -> EvalTo (e1 :× e2) n3
 
 -- --------------------------------------------------
 
-ex010801 :: EvalTo (ENat Z :+ ENat (S(S Z))) (S(S Z))
+ex010801 :: EvalTo (ENat Z :＋ ENat (S(S Z))) (S(S Z))
 ex010801 =  EPlus (ENat' Z') (ENat' (S'(S' Z'))) Z' (S'(S' Z')) (S'(S' Z'))
                   (EConst Z') 
                   (EConst (S'(S' Z')))
                   (PZero (S'(S' Z')))
 
-ex010802 :: EvalTo (ENat (S(S Z)) :+ ENat Z) (S(S Z))
+ex010802 :: EvalTo (ENat (S(S Z)) :＋ ENat Z) (S(S Z))
 ex010802 =  EPlus (ENat' (S'(S' Z'))) (ENat' Z') (S'(S' Z')) Z' (S'(S' Z'))
                   (EConst (S'(S' Z')))
                   (EConst Z') 
@@ -33,8 +33,8 @@ ex010802 =  EPlus (ENat' (S'(S' Z'))) (ENat' Z') (S'(S' Z')) Z' (S'(S' Z'))
                          (PSucc Z' Z' Z' 
                                 (PZero Z')))
 
-ex010803 :: EvalTo ((ENat (S Z) :+ ENat (S Z)) :+ ENat (S Z)) (S(S(S Z)))
-ex010803 = EPlus (ENat' (S' Z') :+: ENat' (S' Z')) (ENat' (S' Z')) (S'(S' Z')) (S' Z') (S'(S'(S' Z')))
+ex010803 :: EvalTo ((ENat (S Z) :＋ ENat (S Z)) :＋ ENat (S Z)) (S(S(S Z)))
+ex010803 = EPlus (ENat' (S' Z') :＋: ENat' (S' Z')) (ENat' (S' Z')) (S'(S' Z')) (S' Z') (S'(S'(S' Z')))
                  (EPlus (ENat' (S' Z')) (ENat' (S' Z')) (S' Z') (S' Z') (S'(S' Z'))
                         (EConst (S' Z'))
                         (EConst (S' Z'))
@@ -45,8 +45,8 @@ ex010803 = EPlus (ENat' (S' Z') :+: ENat' (S' Z')) (ENat' (S' Z')) (S'(S' Z')) (
                         (PSucc Z' (S' Z') (S' Z')
                                (PZero (S' Z')))) 
                  
-ex010804 :: EvalTo (ENat (S(S(S Z))) :+ (ENat (S(S Z)) :* ENat (S Z))) (S(S(S(S(S Z)))))
-ex010804 =  EPlus (ENat' (S'(S'(S' Z')))) (ENat' (S'(S' Z')) :*: ENat' (S' Z')) (S'(S'(S' Z'))) (S'(S' Z')) (S'(S'(S'(S'(S' Z')))))
+ex010804 :: EvalTo (ENat (S(S(S Z))) :＋ (ENat (S(S Z)) :× ENat (S Z))) (S(S(S(S(S Z)))))
+ex010804 =  EPlus (ENat' (S'(S'(S' Z')))) (ENat' (S'(S' Z')) :×: ENat' (S' Z')) (S'(S'(S' Z'))) (S'(S' Z')) (S'(S'(S'(S'(S' Z')))))
                   (EConst (S'(S'(S' Z'))))
                   (ETimes (ENat' (S'(S' Z'))) (ENat' (S' Z')) (S'(S' Z')) (S' Z') (S'(S' Z'))
                           (EConst (S' (S' Z')))
@@ -63,8 +63,8 @@ ex010804 =  EPlus (ENat' (S'(S'(S' Z')))) (ENat' (S'(S' Z')) :*: ENat' (S' Z')) 
                                 (PSucc Z' (S'(S' Z')) (S'(S' Z'))
                                        (PZero (S'(S' Z'))))))
 
-ex010805 :: EvalTo ((ENat (S(S Z)) :+ ENat (S(S Z))) :* ENat Z) Z
-ex010805 =  ETimes (ENat' (S'(S' Z')) :+: ENat' (S'(S' Z'))) (ENat' Z') (S'(S'(S'(S' Z')))) Z' Z'
+ex010805 :: EvalTo ((ENat (S(S Z)) :＋ ENat (S(S Z))) :× ENat Z) Z
+ex010805 =  ETimes (ENat' (S'(S' Z')) :＋: ENat' (S'(S' Z'))) (ENat' Z') (S'(S'(S'(S' Z')))) Z' Z'
                    (EPlus (ENat' (S'(S' Z'))) (ENat' (S'(S' Z'))) (S'(S' Z')) (S'(S' Z')) (S'(S'(S'(S' Z'))))
                           (EConst (S'(S' Z')))
                           (EConst (S'(S' Z')))
@@ -82,8 +82,8 @@ ex010805 =  ETimes (ENat' (S'(S' Z')) :+: ENat' (S'(S' Z'))) (ENat' Z') (S'(S'(S
                                  (PZero Z'))
                           (PZero Z'))
 
-ex010806 :: EvalTo (ENat Z :* (ENat (S(S Z)) :+ ENat (S(S(Z))))) Z
-ex010806 = ETimes (ENat' Z') (ENat' (S'(S' Z')) :+: ENat' (S'(S' Z'))) Z' (S'(S'(S'(S' Z')))) Z'
+ex010806 :: EvalTo (ENat Z :× (ENat (S(S Z)) :＋ ENat (S(S(Z))))) Z
+ex010806 = ETimes (ENat' Z') (ENat' (S'(S' Z')) :＋: ENat' (S'(S' Z'))) Z' (S'(S'(S'(S' Z')))) Z'
                   (EConst Z')
                   (EPlus (ENat' (S'(S' Z'))) (ENat' (S'(S' Z'))) (S'(S' Z')) (S'(S' Z')) (S'(S'(S'(S' Z'))))
                          (EConst (S'(S' Z')))
