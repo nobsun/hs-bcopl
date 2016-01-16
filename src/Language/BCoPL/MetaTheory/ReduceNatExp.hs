@@ -10,7 +10,7 @@
 module Language.BCoPL.MetaTheory.ReduceNatExp where
 
 import Language.BCoPL.Peano
--- import Language.BCoPL.Nat
+import Language.BCoPL.Nat
 
 import Language.BCoPL.Equiv
 import Language.BCoPL.Exists
@@ -370,19 +370,30 @@ reduceSize e e' r = case r of
                  Refl -> case addUnique n1 (S' n2') (S' n3') (plusSucc n1 n2' n3' p') of
                    Refl -> Refl
 
-newtype SzInvariant e e' e'' n = SzInvariant (Size e :=: (n :+ Size e''))
-rdseq :: Exp' e -> Exp' e' -> Exp' e'' -> (e :-*-> e') -> (e' :---> e'') -> Exists Nat' (SzInvariant e e' e'')
+newtype RdInvariant e e' n = RdInvariant (Size e :=: (n :+ Size e'))
+
+rdseq :: Exp' e -> Exp' e' -> Exp' e'' -> (e :-*-> e') -> (e' :---> e'') -> Exists Nat' (RdInvariant e e'')
 rdseq e ei ei' mr sr' = case normalize mr of
   MRZero _             -> case reduceSize ei ei' sr' of
-    Refl -> ExIntro (S' Z') (SzInvariant Refl)
+    Refl -> ExIntro (S' Z') (RdInvariant Refl)
   MROne _ _ sr          -> case rdseq e e ei (MRZero e) sr of
-    ExIntro _ (SzInvariant Refl) -> case reduceSize e ei sr of
+    ExIntro _ (RdInvariant Refl) -> case reduceSize e ei sr of
       Refl -> case reduceSize ei ei' sr' of
-        Refl -> ExIntro (S' (S' Z')) (SzInvariant Refl)
+        Refl -> ExIntro (S' (S' Z')) (RdInvariant Refl)
   MRMulti _ e' _ r' ri -> case ri of
     MROne _ _ r1 -> case rdseq e e' ei r' r1 of
-      ExIntro n (SzInvariant Refl) -> case reduceSize ei ei' sr' of
+      ExIntro n (RdInvariant Refl) -> case reduceSize ei ei' sr' of
         Refl -> case uniqSucc n (size ei') of
-          Refl -> ExIntro (S' n) (SzInvariant Refl)
+          Refl -> ExIntro (S' n) (RdInvariant Refl)
     pat -> case pat of {}
 
+newtype InRdSeq (e0 :: Exp) (e :: Exp) (i :: Nat) = InRdSeq (e0 :-*-> e, RdInvariant e0 e i)
+
+propSize :: Exp' e -> Not (Size e :=: Z)
+propSize e = case e of {}
+
+introZero :: Nat' m -> Nat' n -> m :=: (m :+ n) -> n :=: Z
+introZero m n Refl = case addUnique' m n m Refl of
+  PZero _ -> Refl
+  PSucc m' _ _ p -> case introZero m' n (addUnique m' n m' p) of Refl -> Refl
+  

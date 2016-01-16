@@ -89,6 +89,13 @@ addUnique n1 n2 n3 p = case n1 of
       Refl -> plusUnique (S' n1') n2 n3 (S' n4) p p
     pat -> case pat of {}
 
+addUnique' :: Nat' n1 -> Nat' n2 -> Nat' n3 -> (n3 :=: (n1 :+ n2)) -> Plus n1 n2 n3
+addUnique' n1 n2 n3 Refl = case n1 of
+  Z'      -> PZero n2
+  S' n1'  -> case n3 of
+    S' n3' -> PSucc n1' n2 n3' (addUnique' n1' n2 n3' Refl)
+    pat    -> case pat of {}
+
 -- 定理 2.3 加法閉包性
 
 -- | 加法閉包性
