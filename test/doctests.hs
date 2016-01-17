@@ -3,5 +3,5 @@ module Main where
 import Test.DocTest
 
 main :: IO ()
-main = doctest ["src/Language/BCoPL/MetaTheory/Nat.hs"]
+main = doctest ["src/Language/BCoPL/TypeLevel/MetaTheory/Nat.hs"]
 

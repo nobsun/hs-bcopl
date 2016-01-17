@@ -1,7 +1,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE PolyKinds #-}
 
-module Language.BCoPL.Exists where
+module Language.BCoPL.TypeLevel.Exists where
 
 data Exists (s :: k -> *) (p :: k -> *) where
   ExIntro :: s a -> p a -> Exists s p

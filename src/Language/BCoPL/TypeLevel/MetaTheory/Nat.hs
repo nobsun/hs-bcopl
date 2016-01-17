@@ -5,13 +5,13 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE EmptyCase #-}
-module Language.BCoPL.MetaTheory.Nat where
+module Language.BCoPL.TypeLevel.MetaTheory.Nat where
 
-import Language.BCoPL.Peano
-import Language.BCoPL.Nat
+import Language.BCoPL.TypeLevel.Peano
+import Language.BCoPL.TypeLevel.Nat
 
-import Language.BCoPL.Equiv
-import Language.BCoPL.Exists
+import Language.BCoPL.TypeLevel.Equiv
+import Language.BCoPL.TypeLevel.Exists
 
 -- $setup
 -- >>> :set -XGADTs

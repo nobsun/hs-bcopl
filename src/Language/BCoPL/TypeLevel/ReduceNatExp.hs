@@ -2,11 +2,11 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE TypeOperators #-}
-module Language.BCoPL.ReduceNatExp where
+module Language.BCoPL.TypeLevel.ReduceNatExp where
 
-import Language.BCoPL.Peano
-import Language.BCoPL.Nat
-import Language.BCoPL.Exp
+import Language.BCoPL.TypeLevel.Peano
+import Language.BCoPL.TypeLevel.Nat
+import Language.BCoPL.TypeLevel.Exp
 
 data (:--->) (e1 :: Exp) (e2 :: Exp) where
   RPlus :: Nat' n1 -> Nat' n2 -> Nat' n3

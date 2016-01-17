@@ -5,7 +5,7 @@
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE UndecidableInstances #-}
-module Language.BCoPL.Peano where
+module Language.BCoPL.TypeLevel.Peano where
 
 import Data.Char
 import Data.List
@@ -46,3 +46,8 @@ add :: Nat' n1 -> Nat' n2 -> Nat' (n1 :+ n2)
 add n1 n2 = case n1 of
   Z'     -> n2
   S' n1' -> S' (add n1' n2)
+
+mul :: Nat' n1 -> Nat' n2 -> Nat' (n1 :* n2)
+mul n1 n2 = case n1 of
+  Z'     -> Z'
+  S' n1' -> add n2 (mul n1' n2)

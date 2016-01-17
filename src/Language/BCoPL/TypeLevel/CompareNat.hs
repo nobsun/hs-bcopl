@@ -1,9 +1,9 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE PolyKinds #-}
-module Language.BCoPL.CompareNat where
+module Language.BCoPL.TypeLevel.CompareNat where
 
-import Language.BCoPL.Peano
+import Language.BCoPL.TypeLevel.Peano
 
 data LessThan1 (n1 :: Nat) (n2 :: Nat) where
   LSucc1  :: Nat' n -> LessThan1 n (S n)  -- a < 1+a

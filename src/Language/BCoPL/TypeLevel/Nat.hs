@@ -5,9 +5,9 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE FlexibleInstances #-}
-module Language.BCoPL.Nat where
+module Language.BCoPL.TypeLevel.Nat where
 
-import Language.BCoPL.Peano
+import Language.BCoPL.TypeLevel.Peano
 
 data Plus (n1 :: Nat) (n2 :: Nat) (n3 :: Nat) where
   PZero :: Nat' n -> Plus Z n n

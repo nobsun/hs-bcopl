@@ -7,18 +7,18 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE EmptyCase #-}
-module Language.BCoPL.MetaTheory.ReduceNatExp where
+module Language.BCoPL.TypeLevel.MetaTheory.ReduceNatExp where
 
-import Language.BCoPL.Peano
-import Language.BCoPL.Nat
+import Language.BCoPL.TypeLevel.Peano
+import Language.BCoPL.TypeLevel.Nat
 
-import Language.BCoPL.Equiv
-import Language.BCoPL.Exists
+import Language.BCoPL.TypeLevel.Equiv
+import Language.BCoPL.TypeLevel.Exists
 
-import Language.BCoPL.Exp
-import Language.BCoPL.ReduceNatExp
+import Language.BCoPL.TypeLevel.Exp
+import Language.BCoPL.TypeLevel.ReduceNatExp
 
-import Language.BCoPL.MetaTheory.Nat
+import Language.BCoPL.TypeLevel.MetaTheory.Nat
 
 newtype BothExp e1 e2 = BothExp (Exp' e1, Exp' e2)
 newtype PlusExp  e e1 e2 = PlusExp  (e :=: (e1 :＋ e2))

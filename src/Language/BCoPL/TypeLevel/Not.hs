@@ -1,9 +1,8 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE EmptyDataDecls #-}
 {-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE TypeFamilies #-}
-module Language.BCoPL.Not where
+module Language.BCoPL.TypeLevel.Not where
 
 data Absurd
 
-type family Not a :: Absurd
+type Not a = a -> Absurd

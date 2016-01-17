@@ -2,10 +2,10 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE EmptyCase #-}
-module Language.BCoPL.MetaTheory.CompareNat where
+module Language.BCoPL.TypeLevel.MetaTheory.CompareNat where
 
-import Language.BCoPL.Peano
-import Language.BCoPL.CompareNat
+import Language.BCoPL.TypeLevel.Peano
+import Language.BCoPL.TypeLevel.CompareNat
 
 -- | 定理 2.11 (CompareNat1: 0 < 1+a)
 

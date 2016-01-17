@@ -5,16 +5,16 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE EmptyCase #-}
-module Language.BCoPL.MetaTheory.EvalNatExp where
+module Language.BCoPL.TypeLevel.MetaTheory.EvalNatExp where
 
-import Language.BCoPL.Peano
-import Language.BCoPL.Exp
+import Language.BCoPL.TypeLevel.Peano
+import Language.BCoPL.TypeLevel.Exp
 
-import Language.BCoPL.Equiv
-import Language.BCoPL.Exists
-import Language.BCoPL.EvalNatExp
+import Language.BCoPL.TypeLevel.Equiv
+import Language.BCoPL.TypeLevel.Exists
+import Language.BCoPL.TypeLevel.EvalNatExp
 
-import Language.BCoPL.MetaTheory.Nat
+import Language.BCoPL.TypeLevel.MetaTheory.Nat
 
 -- | 定理 2.15 (Totality of evaluation)
 

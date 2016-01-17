@@ -4,7 +4,7 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
-module Language.BCoPL.Equiv where
+module Language.BCoPL.TypeLevel.Equiv where
 
 data a :=: b where
   Refl  :: a :=: a

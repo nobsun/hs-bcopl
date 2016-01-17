@@ -2,11 +2,11 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE TypeOperators #-}
-module Language.BCoPL.EvalNatExp where
+module Language.BCoPL.TypeLevel.EvalNatExp where
 
-import Language.BCoPL.Peano
-import Language.BCoPL.Nat
-import Language.BCoPL.Exp
+import Language.BCoPL.TypeLevel.Peano
+import Language.BCoPL.TypeLevel.Nat
+import Language.BCoPL.TypeLevel.Exp
 
 data EvalTo (exp :: Exp) (n :: Nat) where
   EConst :: Nat' n -> EvalTo (ENat n) n

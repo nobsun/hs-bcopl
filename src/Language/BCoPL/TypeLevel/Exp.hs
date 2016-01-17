@@ -4,10 +4,10 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE KindSignatures #-}
-module Language.BCoPL.Exp where
+module Language.BCoPL.TypeLevel.Exp where
 
 import Text.ParserCombinators.ReadP
-import Language.BCoPL.Peano
+import Language.BCoPL.TypeLevel.Peano
 
 data Exp = ENat Nat
          | Exp :＋ Exp

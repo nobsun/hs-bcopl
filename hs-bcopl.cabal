@@ -14,18 +14,18 @@ extra-source-files:  README.md
 cabal-version:       >=1.10
 
 library
-  exposed-modules:       Language.BCoPL.Peano
-                       , Language.BCoPL.Nat
-                       , Language.BCoPL.Exp
-                       , Language.BCoPL.CompareNat
-                       , Language.BCoPL.EvalNatExp
-                       , Language.BCoPL.ReduceNatExp
-                       , Language.BCoPL.Equiv
-                       , Language.BCoPL.Exists
-                       , Language.BCoPL.MetaTheory.Nat
-                       , Language.BCoPL.MetaTheory.CompareNat
-                       , Language.BCoPL.MetaTheory.EvalNatExp
-                       , Language.BCoPL.MetaTheory.ReduceNatExp
+  exposed-modules:       Language.BCoPL.TypeLevel.Peano
+                       , Language.BCoPL.TypeLevel.Nat
+                       , Language.BCoPL.TypeLevel.Exp
+                       , Language.BCoPL.TypeLevel.CompareNat
+                       , Language.BCoPL.TypeLevel.EvalNatExp
+                       , Language.BCoPL.TypeLevel.ReduceNatExp
+                       , Language.BCoPL.TypeLevel.Equiv
+                       , Language.BCoPL.TypeLevel.Exists
+                       , Language.BCoPL.TypeLevel.MetaTheory.Nat
+                       , Language.BCoPL.TypeLevel.MetaTheory.CompareNat
+                       , Language.BCoPL.TypeLevel.MetaTheory.EvalNatExp
+                       , Language.BCoPL.TypeLevel.MetaTheory.ReduceNatExp
   -- other-modules:       
   -- other-extensions:    
   build-depends:         base >=4.8 && <4.9
