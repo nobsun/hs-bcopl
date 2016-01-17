@@ -1,4 +1,4 @@
-module Language.BCoPL.Diagram (
+module Language.BCoPL.DataLevel.Diagram (
   -- * Types
     Diagram (..)
   -- * Pretty Printer

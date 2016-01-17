@@ -1,5 +1,5 @@
 {-# LANGUAGE BangPatterns #-}
-module Language.BCoPL.ReduceNatExp (
+module Language.BCoPL.DataLevel.ReduceNatExp (
     -- * Types
     Judge(OnNat,ReduceTo)
     -- * Deducers
@@ -24,10 +24,10 @@ module Language.BCoPL.ReduceNatExp (
 
 import Control.Applicative ((<|>))
 
-import Language.BCoPL.Nat (Nat(..))
-import qualified Language.BCoPL.Nat as Nat (Judge(..),deduce)
-import Language.BCoPL.Exp (Exp(..),operator,loperand,roperand)
-import Language.BCoPL.Derivation (Tree(..),Derivation,Deducer,sessionGen,sessionGen')
+import Language.BCoPL.DataLevel.Nat (Nat(..))
+import qualified Language.BCoPL.DataLevel.Nat as Nat (Judge(..),deduce)
+import Language.BCoPL.DataLevel.Exp (Exp(..),operator,loperand,roperand)
+import Language.BCoPL.DataLevel.Derivation (Tree(..),Derivation,Deducer,sessionGen,sessionGen')
 
 data Judge = OnNat Nat.Judge
            | ReduceTo Exp Exp

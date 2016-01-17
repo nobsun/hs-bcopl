@@ -1,4 +1,4 @@
-module Language.BCoPL.Nat (
+module Language.BCoPL.DataLevel.Nat (
       -- * Types
       Nat(..)
     , Judge(..)
@@ -9,8 +9,8 @@ module Language.BCoPL.Nat (
     , session'
     ) where
 
-import Language.BCoPL.Peano (Nat(..))
-import Language.BCoPL.Derivation (Tree(..),Deducer,sessionGen,sessionGen')
+import Language.BCoPL.DataLevel.Peano (Nat(..))
+import Language.BCoPL.DataLevel.Derivation (Tree(..),Deducer,sessionGen,sessionGen')
 
 data Judge = Plus  { k,m,n :: Nat }
            | Times { k,m,n :: Nat }

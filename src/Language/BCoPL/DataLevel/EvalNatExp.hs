@@ -1,4 +1,4 @@
-module Language.BCoPL.EvalNatExp (
+module Language.BCoPL.DataLevel.EvalNatExp (
     -- * Types
     Nat(..)
   , Exp(..)
@@ -11,10 +11,10 @@ module Language.BCoPL.EvalNatExp (
 
 import Data.Char (toLower)
 
-import Language.BCoPL.Exp (Exp(..))
-import Language.BCoPL.Peano (Nat(..))
-import qualified Language.BCoPL.Nat as Nat (Judge(..),deduce)
-import Language.BCoPL.Derivation (Tree(..),Deducer,Derivation,sessionGen,sessionGen')
+import Language.BCoPL.DataLevel.Exp (Exp(..))
+import Language.BCoPL.DataLevel.Peano (Nat(..))
+import qualified Language.BCoPL.DataLevel.Nat as Nat (Judge(..),deduce)
+import Language.BCoPL.DataLevel.Derivation (Tree(..),Deducer,Derivation,sessionGen,sessionGen')
 
 data Judge = OnNat Nat.Judge
            | EvalTo Exp Nat

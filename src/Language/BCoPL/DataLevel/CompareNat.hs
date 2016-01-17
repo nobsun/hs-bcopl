@@ -1,4 +1,4 @@
-module Language.BCoPL.CompareNat (
+module Language.BCoPL.DataLevel.CompareNat (
     -- * Types
     Nat (..)
   , Judge (..)
@@ -15,8 +15,8 @@ module Language.BCoPL.CompareNat (
   , session3'
   ) where
 
-import Language.BCoPL.Peano (Nat(..))
-import Language.BCoPL.Derivation (Tree(..),Deducer,sessionGen,sessionGen')
+import Language.BCoPL.DataLevel.Peano (Nat(..))
+import Language.BCoPL.DataLevel.Derivation (Tree(..),Deducer,sessionGen,sessionGen')
 
 data Judge = LessThan Nat Nat
            deriving (Eq)

@@ -1,5 +1,5 @@
 {-# LANGUAGE NPlusKPatterns #-}
-module Language.BCoPL.Peano(
+module Language.BCoPL.DataLevel.Peano(
     -- * Type
     Nat (..)
   ) where

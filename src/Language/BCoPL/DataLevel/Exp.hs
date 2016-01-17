@@ -1,4 +1,4 @@
-module Language.BCoPL.Exp (
+module Language.BCoPL.DataLevel.Exp (
     -- * Types
     Exp(..)
   , operator
@@ -7,7 +7,7 @@ module Language.BCoPL.Exp (
   ) where
 
 import Text.ParserCombinators.ReadP
-import Language.BCoPL.Peano(Nat(..))
+import Language.BCoPL.DataLevel.Peano(Nat(..))
 
 data Exp = Nat Nat
          | Exp :+: Exp

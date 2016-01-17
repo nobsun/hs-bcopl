@@ -1,5 +1,5 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-module Language.BCoPL.Derivation (
+module Language.BCoPL.DataLevel.Derivation (
     -- * Types
     Tree (..)
   , Deducer
@@ -13,7 +13,7 @@ import Control.Exception (catch, SomeException)
 import Data.Char (toLower)
 import Data.List (isPrefixOf,intersperse)
 import Data.Tree (Tree (..))
-import Language.BCoPL.Diagram (Diagram(..),renderDiagram,ppr,textDiag)
+import Language.BCoPL.DataLevel.Diagram (Diagram(..),renderDiagram,ppr,textDiag)
 
 type Derivation a = Tree (String,a)
 type Deducer a = a -> [Derivation a]
