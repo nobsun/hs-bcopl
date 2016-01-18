@@ -1,4 +1,6 @@
-# hs-bcopl 五十嵐淳著『プログラミング言語の基礎概念』
+# hs-bcopl
+
+五十嵐淳著『プログラミング言語の基礎概念』
 
 ## データレベルプログラム
 
@@ -6,12 +8,12 @@
 
 ### 第1章
 
-- ``Language.BCoPL.DataLevel.Peano``： ペアノ自然数
-- ``Language.BCoPL.DataLevel.Nat``： 自然数の加算・乗算
-- ``Language.BCoPL.DataLevel.CompareNat``： 自然数の比較
-- ``Language.BCoPL.DataLevel.Exp``： 算術式
-- ``Language.BCoPL.DataLevel.EvalNatExp``： 算術式の評価
-- ``Language.BCoPL.DataLevel.ReduceNatExp``： 算術式の簡約
+- Language.BCoPL.DataLevel.Peano： ペアノ自然数
+- Language.BCoPL.DataLevel.Nat： 自然数の加算・乗算
+- Language.BCoPL.DataLevel.CompareNat： 自然数の比較
+- Language.BCoPL.DataLevel.Exp： 算術式
+- Language.BCoPL.DataLevel.EvalNatExp： 算術式の評価
+- Language.BCoPL.DataLevel.ReduceNatExp： 算術式の簡約
 
 使用例（出力の改行は編集でいれたもの）
 
