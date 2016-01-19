@@ -387,7 +387,7 @@ rdseq e ei ei' mr sr' = case normalize mr of
           Refl -> ExIntro (S' n) (RdInvariant Refl)
     pat -> case pat of {}
 
-newtype InRdSeq (e0 :: Exp) (e :: Exp) (i :: Nat) = InRdSeq (e0 :-*-> e, RdInvariant e0 e i)
+newtype InRdSeq e0 e i = InRdSeq (e0 :-*-> e, RdInvariant e0 e i)
 
 propSize :: Exp' e -> Not (Size e :=: Z)
 propSize e = case e of {}
@@ -396,4 +396,10 @@ introZero :: Nat' m -> Nat' n -> m :=: (m :+ n) -> n :=: Z
 introZero m n Refl = case addUnique' m n m Refl of
   PZero _ -> Refl
   PSucc m' _ _ p -> case introZero m' n (addUnique m' n m' p) of Refl -> Refl
-  
+
+newtype StrongNormalization e e' i = StrongNomalization (Either (Not (e :-*-> e')) (Not (RdInvariant e e' i)))
+
+strongNormalization :: Exp' e -> Exp' e' -> (Exists Nat' (StrongNormalization e e'))
+strongNormalization e e' = let n = size e
+                           in  ExIntro n
+                                 (StrongNomalization (Right (case propSize e' of {})))
