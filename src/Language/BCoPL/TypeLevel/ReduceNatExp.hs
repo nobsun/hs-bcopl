@@ -34,16 +34,19 @@ data (:-*->) (e1 :: Exp) (e2 :: Exp) where
           -> e :-*-> e' -> e' :-*-> e''
           -> e :-*-> e''
 
-normalize :: (e :-*-> e') -> (e :-*-> e')
-normalize mr = case mr of
+normalizeMRM :: (e :-*-> e') -> (e :-*-> e')
+normalizeMRM mr = case mr of
   MRZero _ -> mr
   MROne _ _ _ -> mr
   MRMulti e1 e2 e3 mr1 mr2 -> case mr2 of
-    MRZero _    -> normalize mr1
-    MROne _ _ _ -> MRMulti e1 e2 e3 (normalize mr1) mr2
-    MRMulti _ e4 _ mr21 mr22 -> normalize (MRMulti e1 e4 e3 (normalize (MRMulti e1 e2 e4 (normalize mr1) (normalize mr21))) (normalize mr22))
-
-                                                                
+    MRZero _    -> normalizeMRM mr1
+    MROne _ _ _ -> MRMulti e1 e2 e3 (normalizeMRM mr1) mr2
+    MRMulti _ e4 _ mr21 mr22
+      -> normalizeMRM (MRMulti e1 e4 e3
+                       (normalizeMRM (MRMulti e1 e2 e4
+                                      (normalizeMRM mr1)
+                                      (normalizeMRM mr21)))
+                       (normalizeMRM mr22))
 
 data (:-/->) (e1 :: Exp) (e2 :: Exp) where
   DRPlus :: Nat' n1 -> Nat' n2 -> Nat' n3

@@ -373,7 +373,7 @@ reduceSize e e' r = case r of
 newtype RdInvariant e e' n = RdInvariant (Size e :=: (n :+ Size e'))
 
 rdseq :: Exp' e -> Exp' e' -> Exp' e'' -> (e :-*-> e') -> (e' :---> e'') -> Exists Nat' (RdInvariant e e'')
-rdseq e ei ei' mr sr' = case normalize mr of
+rdseq e ei ei' mr sr' = case normalizeMRM mr of
   MRZero _             -> case reduceSize ei ei' sr' of
     Refl -> ExIntro (S' Z') (RdInvariant Refl)
   MROne _ _ sr          -> case rdseq e e ei (MRZero e) sr of
@@ -403,3 +403,4 @@ strongNormalization :: Exp' e -> Exp' e' -> (Exists Nat' (StrongNormalization e 
 strongNormalization e e' = let n = size e
                            in  ExIntro n
                                  (StrongNomalization (Right (case propSize e' of {})))
+

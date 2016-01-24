@@ -1,5 +1,5 @@
 name:                hs-bcopl
-version:             2.2.1.3.3
+version:             2.2.1.3.5
 -- synopsis:            
 -- description:         
 homepage:            http://github.com/nobsun/hs-bcopl
@@ -37,6 +37,7 @@ library
                      , Language.BCoPL.TypeLevel.MetaTheory.CompareNat
                      , Language.BCoPL.TypeLevel.MetaTheory.EvalNatExp
                      , Language.BCoPL.TypeLevel.MetaTheory.ReduceNatExp
+                     , Language.BCoPL.TypeLevel.MetaTheory.Semantics
   -- other-modules:       
   -- other-extensions:    
   build-depends:         base >=4.8 && <4.9
