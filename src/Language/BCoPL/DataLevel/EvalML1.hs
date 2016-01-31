@@ -3,7 +3,7 @@ module Language.BCoPL.DataLevel.EvalML1 where
 -- import Debug.Trace
 import Data.Char (toLower)
 import Language.BCoPL.DataLevel.ML1
-import Language.BCoPL.DataLevel.Derivation (Tree(..),Deducer,Derivation,sessionGen,sessionGen')
+import Language.BCoPL.DataLevel.Derivation (Tree(..),Deducer,sessionGen,sessionGen')
 
 data Judge = EvalTo Exp Val
            | Plus  {k,m,n :: Int}
@@ -30,6 +30,7 @@ instance Read Judge where
            ([k],_:m:"is":[n]) -> [(Times (read k) (read m) (read n),"")]
            _                  -> case break ("less"==) ws of
              ([p],_:_:q:"is":[r]) -> [(LessThan (read p) (read q) (read r),"")]
+             _ -> error ("Syntax error!: " ++ s)
 
 deduce :: Deducer Judge
 deduce j = case j of
@@ -52,27 +53,27 @@ deduce j = case j of
       e1 :+: e2   -> take 1
                      $ 
                      [ Node ("E-Plus",j) [j1,j2,j3]
-                     | n1 <- ints
+                     | n1 <- ints (n^2)
                      , j1 <- deduce (EvalTo e1 (Int n1))
-                     , n2 <- ints
+                     , n2 <- ints (n^2)
                      , j2 <- deduce (EvalTo e2 (Int n2))
                      , j3 <- deduce (Plus n1 n2 n)
                      ]
       e1 :-: e2   -> take 1
                      $ 
                      [ Node ("E-Minus",j) [j1,j2,j3]
-                     | n1 <- ints
+                     | n1 <- ints (n^2)
                      , j1 <- deduce (EvalTo e1 (Int n1))
-                     , n2 <- ints
+                     , n2 <- ints (n^2)
                      , j2 <- deduce (EvalTo e2 (Int n2))
                      , j3 <- deduce (Minus n1 n2 n)
                      ]
       e1 :*: e2   -> take 1
                      $ 
                      [ Node ("E-Times",j) [j1,j2,j3]
-                     | n1 <- ints
+                     | n1 <- ints (n^2)
                      , j1 <- deduce (EvalTo e1 (Int n1))
-                     , n2 <- ints
+                     , n2 <- ints (n^2)
                      , j2 <- deduce (EvalTo e2 (Int n2))
                      , j3 <- deduce (Times n1 n2 n)
                      ]
@@ -82,9 +83,9 @@ deduce j = case j of
         | b == b' -> [ Node ("E-Bool",j) []]
         | True    -> []
       e1 :<: e2   -> take 1 $ [ Node ("E-Lt",j) [j1,j2,j3]
-                     | n1 <- ints
+                     | n1 <- ints maxBound
                      , j1 <- deduce (EvalTo e1 (Int n1))
-                     , n2 <- ints
+                     , n2 <- ints maxBound
                      , j2 <- deduce (EvalTo e2 (Int n2))
                      , j3 <- deduce (LessThan n1 n2 True)
                      ]
@@ -99,13 +100,14 @@ deduce j = case j of
                      | j1 <- deduce (EvalTo e1 (Bool False))
                      , j2 <- deduce (EvalTo e3 (Bool b))
                      ]
+      _           -> []
   Plus k m n     -> [ Node ("B-Plus",j) []  | k+m == n ]
   Minus k m n    -> [ Node ("B-Minus",j) [] | k-m == n ]
   Times k m n    -> [ Node ("B-Times",j) [] | k*m == n ]
   LessThan p q r -> [ Node ("B-Lt",j) []    | (p<q) == r ]
 
-ints :: [Int]
-ints = tail $ [0..] >>= \n -> [f n | f <- [id,negate]]
+ints :: Int -> [Int]
+ints m = takeWhile ((abs m >=) . abs) $ tail $ [0..] >>= \n -> [f n | f <- [id,negate]]
 
 session,session' :: IO ()
 session  = sessionGen  ("EvalML1> ",deduce)

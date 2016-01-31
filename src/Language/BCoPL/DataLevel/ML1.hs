@@ -1,37 +1,39 @@
+{-# LANGUAGE EmptyCase #-}
 module Language.BCoPL.DataLevel.ML1 (
     -- * Types
     Val(..)
   , Exp(..)
     -- * Utilities
-  , operator
-  , loperand
-  , roperand
+  -- , operator
+  -- , loperand
+  -- , roperand
   ) where
 
-import Data.Char (isDigit,isAlpha,isSpace,toLower)
+import Data.Char (isDigit,toLower,digitToInt)
 import Text.ParserCombinators.ReadP
 
 data Val = Int Int
          | Bool Bool
          deriving (Eq)
 
-isInt :: Val -> Bool
-isInt (Int _) = True
-isInt _       = False
-
 instance Show Val where
   show (Int n)  = show n
   show (Bool b) = map toLower (show b)
 
 instance Read Val where
-  readsPrec _ "false" = [(Bool False,"")]
-  readsPrec _ "true"  = [(Bool True,"")]
-  readsPrec _ s       = case span isDigit s' of
-    ("",_)  -> case span isAlpha s' of
-      (bs,cs) | map toLower bs == "false" -> [(Bool False,cs)]
-              | map toLower bs == "true"  -> [(Bool True,cs)]
-    (is,cs) -> [(Int (read is),cs)]
-    where s' = dropWhile isSpace s
+  readsPrec _ = readP_to_S pVal
+
+pVal :: ReadP Val
+pVal = skipSpaces >> (pInt +++ pBool)
+
+pInt = pNegInt +++ pPosInt
+
+pNegInt = char '-' >> pPosInt >>= \ (Int n) -> return (Int (negate n))
+pPosInt = many1 (satisfy isDigit) >>= return . Int . foldl ((+) . (10 *)) 0 . map digitToInt 
+
+pBool = pFalse +++ pTrue
+pFalse = string "false" >> return (Bool False)
+pTrue  = string "true"  >> return (Bool True)
 
 data Exp = Val Val
          | Exp :+: Exp
@@ -41,75 +43,117 @@ data Exp = Val Val
          | IF Exp Exp Exp
          deriving (Eq)
 
-operator :: Exp -> (Exp -> Exp -> Exp)
-operator (_ :+: _) = (:+:)
-operator (_ :*: _) = (:*:)
-operator (_ :-: _) = (:-:)
-operator (_ :<: _) = (:<:)
-
-loperand :: Exp -> Exp
-loperand (l :+: _) = l
-loperand (l :*: _) = l
-loperand (l :-: _) = l
-loperand (l :<: _) = l
-
-roperand :: Exp -> Exp
-roperand (_ :+: r) = r
-roperand (_ :*: r) = r
-roperand (_ :-: r) = r
-roperand (_ :<: r) = r
-
+{- -
 instance Show Exp where
   show e = case e of
     Val v     -> show v
     e1 :+: e2 -> show e1 ++ " + " ++ show e2
-    e1 :-: e2 -> show e1 ++ " + " ++ show e2
+    e1 :-: e2 -> show e1 ++ " - " ++ show e2
     e1 :*: e2 -> show' e1 ++ " * " ++ show' e2
-    e1 :<: e2 -> show e1 ++ " * " ++ show e2
+    e1 :<: e2 -> show e1 ++ " < " ++ show e2
     IF e1 e2 e3 -> "if " ++ show e1 ++ " then " ++ show e2 ++ " else " ++ show e3
     where
       show' e' = case e' of
         e1' :+: e2' -> "("++show e'++")"
+        e1' :-: e2' -> "("++show e'++")"
         _           -> show e'
+-- -}
+
+{- -}
+instance Show Exp where
+  show e = case e of
+    Val v     -> show v
+    e1 :+: e2 -> "(" ++ show e1 ++ " + " ++ show e2 ++ ")"
+    e1 :-: e2 -> "(" ++ show e1 ++ " - " ++ show e2 ++ ")"
+    e1 :*: e2 -> "(" ++ show e1 ++ " * " ++ show e2 ++ ")"
+    e1 :<: e2 -> "(" ++ show e1 ++ " < " ++ show e2 ++ ")"
+    IF e1 e2 e3 -> "(" ++ "if " ++ show e1 ++ " then " ++ show e2 ++ " else " ++ show e3 ++")"
+-- -}
 
 instance Read Exp where
-  readsPrec _ = readP_to_S expr
+  readsPrec _ = readP_to_S expr1
 
-expr :: ReadP Exp
-expr = term `chainl1` addop
-term = factor `chainl1` mulop
+expr1 :: ReadP Exp
+expr1 = ifexpr +++ binop +++ expr2
+expr2 :: ReadP Exp
+expr2 = chainl1 expr3 cmpop
+expr3 :: ReadP Exp
+expr3 = chainl1 expr4 addop
+expr4 :: ReadP Exp
+expr4 = chainl1 aexpr mulop
+aexpr :: ReadP Exp
+aexpr = val +++ parens expr1
 
+ifexpr :: ReadP Exp
+ifexpr = do
+  { skipSpaces
+  ; string "if"
+  ; skipSpaces
+  ; e1 <- expr1
+  ; skipSpaces
+  ; string "then"
+  ; skipSpaces
+  ; e2 <- expr1
+  ; skipSpaces
+  ; string "else"
+  ; skipSpaces
+  ; e3 <- expr1
+  ; return $ IF e1 e2 e3
+  }
+
+binop :: ReadP Exp
+binop = cmpexp +++ addexp +++ mulexp
+
+cmpexp :: ReadP Exp
+cmpexp = do { skipSpaces
+            ; e1 <- expr3
+            ; op <- cmpop
+            ; e2 <- ifexpr
+            ; skipSpaces
+            ; return (op e1 e2)
+            }
+
+addexp :: ReadP Exp
+addexp = do { skipSpaces
+            ; e1 <- expr4
+            ; op <- addop
+            ; e2 <- ifexpr
+            ; skipSpaces
+            ; return (op e1 e2)
+            }
+
+mulexp :: ReadP Exp
+mulexp = do { skipSpaces
+            ; e1 <- aexpr
+            ; op <- mulop
+            ; e2 <- ifexpr
+            ; skipSpaces
+            ; return (op e1 e2)
+            }
+
+cmpop :: ReadP (Exp -> Exp -> Exp)
+cmpop = do { skipSpaces
+           ; string "<"
+           ; skipSpaces
+           ; return (:<:)
+           }
+
+addop :: ReadP (Exp -> Exp -> Exp)
+addop = do { skipSpaces
+           ; op <- string "+" +++ string "-"
+           ; skipSpaces
+           ; return (if op == "+" then (:+:) else (:-:))
+           }
+
+mulop :: ReadP (Exp -> Exp -> Exp)
 mulop = do { skipSpaces
            ; string "*"
            ; skipSpaces
            ; return (:*:)
            }
 
-addop = do { skipSpaces
-           ; string "+"
-           ; skipSpaces
-           ; return (:+:)
-           }
-
-factor :: ReadP Exp
-factor = parens expr +++ val
-
 val :: ReadP Exp
-val = readS_to_P reads >>= return . Val
-
-bool :: ReadP Bool
-bool = do { skipSpaces
-          ; s <- many1 (satisfy isAlpha)
-          ; skipSpaces
-          ; return (read s)
-          }
+val = pVal >>= return . Val
 
 parens :: ReadP a -> ReadP a
-parens p =  do { skipSpaces 
-               ; char '('
-               ; skipSpaces
-               ; c <- p
-               ; skipSpaces
-               ; char ')'
-               ; return c
-               }
+parens = between (char '(') (char ')')
