@@ -400,7 +400,4 @@ introZero m n Refl = case addUnique' m n m Refl of
 newtype StrongNormalization e e' i = StrongNomalization (Either (Not (e :-*-> e')) (Not (RdInvariant e e' i)))
 
 strongNormalization :: Exp' e -> Exp' e' -> (Exists Nat' (StrongNormalization e e'))
-strongNormalization e e' = let n = size e
-                           in  ExIntro n
-                                 (StrongNomalization (Right (case propSize e' of {})))
-
+strongNormalization e e' = ExIntro (size e) (StrongNomalization (Right (case propSize e' of {})))

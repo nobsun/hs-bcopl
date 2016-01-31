@@ -71,4 +71,53 @@ reduceEval e n rd = case normalizeMRM rd of
     RPlus n1 n2 _ p  -> EPlus (ENat' n1) (ENat' n2) n1 n2 n (EConst n1) (EConst n2) p
     RTimes n1 n2 _ t -> ETimes (ENat' n1) (ENat' n2) n1 n2 n (EConst n1) (EConst n2) t
     pat -> case pat of {}
-  MRMulti _ drdx _ mr mr' -> undefined
+  MRMulti _ dex _ mr mr' -> case (e,dex) of
+    (e1 :＋: e2, ENat' n1 :＋: ENat' n2) -> case separateRPathPlus e1 e2 (ENat' n1) (ENat' n2) mr of
+      (rd1,rd2) -> case mr' of
+        MROne _ _ r -> case r of
+          RPlus _ _ _ p -> EPlus e1 e2 n1 n2 n (reduceEval e1 n1 rd1) (reduceEval e2 n2 rd2) p
+          pat -> case pat of {}
+        pat -> case pat of {}
+    (e1 :×: e2, ENat' n1 :×: ENat' n2) -> case separateRPathTimes e1 e2 (ENat' n1) (ENat' n2) mr of
+      (rd1,rd2) -> case mr' of
+        MROne _ _ r -> case r of
+          RTimes _ _ _ t -> ETimes e1 e2 n1 n2 n (reduceEval e1 n1 rd1) (reduceEval e2 n2 rd2) t
+          pat -> case pat of {}
+        pat -> case pat of {}
+    pat -> case pat of {}
+
+separateRPathPlus :: Exp' e1 -> Exp' e2 -> Exp' e1' -> Exp' e2'
+                  -> (e1 :＋ e2) :-*-> (e1' :＋ e2')
+                  -> (e1 :-*-> e1', e2 :-*-> e2')
+separateRPathPlus e1 e2 e1' e2' mr = case normalizeMRM mr of
+  MRZero _ -> (MRZero e1,MRZero e2)
+  MROne _ _ r -> case r of
+    RPlusL _ _ _ r' -> (MROne e1 e1' r', MRZero e2)
+    RPlusR _ _ _ r' -> (MRZero e1, MROne e2 e2' r')
+    pat -> case pat of {}
+  MRMulti _ (e1'' :＋: e2'') _ mr1 mr2 -> case mr2 of
+    MROne _ _ r -> case r of
+      RPlusL _ _ _ r' -> case separateRPathPlus e1 e2 e1'' e2'' mr1 of
+        (mr1',mr2') -> (MRMulti e1 e1'' e1' mr1' (MROne e1'' e1' r'), mr2')
+      RPlusR _ _ _ r' -> case separateRPathPlus e1 e2 e1'' e2'' mr1 of
+        (mr1',mr2') -> (mr1',MRMulti e2 e2'' e2' mr2' (MROne e2'' e2' r'))
+    pat -> case pat of {}
+  pat -> case pat of {}
+  
+separateRPathTimes :: Exp' e1 -> Exp' e2 -> Exp' e1' -> Exp' e2'
+                  -> (e1 :× e2) :-*-> (e1' :× e2')
+                  -> (e1 :-*-> e1', e2 :-*-> e2')
+separateRPathTimes e1 e2 e1' e2' mr = case normalizeMRM mr of
+  MRZero _ -> (MRZero e1,MRZero e2)
+  MROne _ _ r -> case r of
+    RTimesL _ _ _ r' -> (MROne e1 e1' r', MRZero e2)
+    RTimesR _ _ _ r' -> (MRZero e1, MROne e2 e2' r')
+    pat -> case pat of {}
+  MRMulti _ (e1'' :×: e2'') _ mr1 mr2 -> case mr2 of
+    MROne _ _ r -> case r of
+      RTimesL _ _ _ r' -> case separateRPathTimes e1 e2 e1'' e2'' mr1 of
+        (mr1',mr2') -> (MRMulti e1 e1'' e1' mr1' (MROne e1'' e1' r'), mr2')
+      RTimesR _ _ _ r' -> case separateRPathTimes e1 e2 e1'' e2'' mr1 of
+        (mr1',mr2') -> (mr1',MRMulti e2 e2'' e2' mr2' (MROne e2'' e2' r'))
+    pat -> case pat of {}
+  pat -> case pat of {}

@@ -40,7 +40,10 @@ normalizeMRM mr = case mr of
   MROne _ _ _ -> mr
   MRMulti e1 e2 e3 mr1 mr2 -> case mr2 of
     MRZero _    -> normalizeMRM mr1
-    MROne _ _ _ -> MRMulti e1 e2 e3 (normalizeMRM mr1) mr2
+    MROne _ _ _ -> case normalizeMRM mr1 of
+      mr1' -> case mr1' of
+        MRZero _ -> mr2
+        _        -> MRMulti e1 e2 e3 mr1' mr2
     MRMulti _ e4 _ mr21 mr22
       -> normalizeMRM (MRMulti e1 e4 e3
                        (normalizeMRM (MRMulti e1 e2 e4
