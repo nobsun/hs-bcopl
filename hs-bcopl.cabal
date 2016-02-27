@@ -24,6 +24,7 @@ library
                      , Language.BCoPL.DataLevel.Derivation
                      , Language.BCoPL.DataLevel.ML1
                      , Language.BCoPL.DataLevel.EvalML1
+                     , Language.BCoPL.DataLevel.EvalML1Err
                      --
                      , Language.BCoPL.TypeLevel.Peano
                      , Language.BCoPL.TypeLevel.Nat
