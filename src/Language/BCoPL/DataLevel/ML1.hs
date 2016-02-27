@@ -43,7 +43,7 @@ data Exp = Val Val
          | IF Exp Exp Exp
          deriving (Eq)
 
-{- -
+{- -}
 instance Show Exp where
   show e = case e of
     Val v     -> show v
@@ -59,7 +59,7 @@ instance Show Exp where
         _           -> show e'
 -- -}
 
-{- -}
+{- -
 instance Show Exp where
   show e = case e of
     Val v     -> show v
